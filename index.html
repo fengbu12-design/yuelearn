@@ -1,0 +1,2380 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#FAF7F1">
+<meta name="description" content="個人粵語自學站：教材精讀、配套影片、粵拼注音、跟讀練習與筆記">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23A8442A'/%3E%3Ctext x='16' y='22' font-size='17' text-anchor='middle' fill='%23FAF7F1' font-family='serif'%3E粵%3C/text%3E%3C/svg%3E">
+<title>粵語自習室 · 第 3 課 打電話</title>
+<style>
+:root{
+  --paper:#FAF7F1; --card:#FFFFFF; --ink:#211E1A; --ink2:#6E6659; --ink3:#9B9285;
+  --line:#E7E0D3; --line2:#D8CFBE;
+  --accent:#A8442A; --accent-soft:#F6E7E1;
+  --jade:#2E6B5E; --jade-soft:#E2EFEA;
+  --gold:#B9862B;
+  --serif:"Songti SC","STSong","Noto Serif TC","Source Han Serif TC",serif;
+  --sans:"PingFang SC","Microsoft YaHei","Noto Sans TC",system-ui,sans-serif;
+  --mono:"SF Mono",ui-monospace,Consolas,monospace;
+  --r:14px;
+}
+html[data-theme="dark"]{
+  --paper:#151412; --card:#1E1C18; --ink:#EDE7DB; --ink2:#B6AC9B; --ink3:#8E8474;
+  --line:#2E2B25; --line2:#3A362E;
+  --accent:#D8704F; --accent-soft:#2A1D17;
+  --jade:#6FB8A2; --jade-soft:#1B2A24;
+  --gold:#C99A3E;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:var(--sans); font-size:15px; line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--accent-soft); color:var(--ink)}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;font-size:inherit;color:inherit;background:none;border:none;cursor:pointer}
+.app{display:grid;grid-template-columns:274px minmax(0,1fr);min-height:100vh}
+main{min-width:0}
+
+/* ---------- sidebar ---------- */
+.sidebar{
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+  border-right:1px solid var(--line);padding:26px 18px 30px;
+  background:var(--paper);
+}
+.brand{padding:0 8px 20px;display:block;text-align:left;width:100%}
+.brand b{display:block;font-family:var(--serif);font-size:21px;letter-spacing:.12em;font-weight:500}
+.brand span{display:block;font-size:11px;color:var(--ink3);letter-spacing:.18em;margin-top:4px}
+.brand:hover b{color:var(--accent)}
+.vol{margin-top:18px}
+.vol-h{display:flex;align-items:baseline;gap:8px;padding:0 8px 8px;border-bottom:1px solid var(--line);margin-bottom:6px;white-space:nowrap}
+.vol-h b{font-family:var(--serif);font-size:13px;letter-spacing:.14em;color:var(--ink2);font-weight:500;flex:none}
+.vol-h i{font-style:normal;font-size:11px;color:var(--ink3);font-family:var(--mono);flex:none}
+.vol-h em{font-style:normal;font-size:11px;color:var(--ink3);margin-left:auto;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.nav-item{
+  display:flex;align-items:center;gap:10px;width:100%;text-align:left;
+  padding:7px 10px;border-radius:8px;color:var(--ink2);font-size:14px;line-height:1.4;
+}
+.nav-item .n{font-family:var(--mono);font-size:11px;color:var(--ink3);width:20px;flex:none}
+.nav-item:hover{background:var(--accent-soft);color:var(--ink)}
+.nav-item.on{background:var(--accent);color:#fff}
+.nav-item.on .n{color:rgba(255,255,255,.65)}
+.nav-item.lock{opacity:.42;cursor:not-allowed}
+.nav-item.lock:hover{background:none;color:var(--ink2)}
+.nav-item .dot{width:5px;height:5px;border-radius:50%;background:var(--jade);margin-left:auto;flex:none}
+.side-foot{margin-top:24px;padding-top:16px;border-top:1px solid var(--line);display:grid;gap:4px}
+.side-foot button{
+  display:flex;align-items:center;gap:9px;width:100%;text-align:left;
+  padding:8px 10px;border-radius:8px;font-size:13.5px;color:var(--ink2)
+}
+.side-foot button:hover{background:var(--accent-soft);color:var(--ink)}
+.side-foot b{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--jade)}
+
+/* ---------- topbar ---------- */
+.topbar{
+  position:sticky;top:0;z-index:30;background:var(--paper);
+  background:color-mix(in srgb,var(--paper) 88%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+}
+.topbar-in{max-width:920px;margin:0 auto;padding:12px 40px;display:flex;align-items:center;gap:12px}
+.crumb{font-size:12.5px;color:var(--ink3);letter-spacing:.04em;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.crumb b{color:var(--ink);font-weight:500}
+.spacer{flex:1}
+.chip-tools{display:flex;gap:6px;align-items:center;flex:none}
+.tool{
+  font-size:12px;padding:5px 10px;border:1px solid var(--line2);border-radius:999px;
+  color:var(--ink2);background:var(--card);letter-spacing:.03em;white-space:nowrap
+}
+.tool:hover{border-color:var(--accent);color:var(--accent)}
+.tool.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.progress-line{height:2px;background:var(--line)}
+.progress-line i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
+.menu-btn{display:none;width:32px;height:32px;border-radius:8px;border:1px solid var(--line2);place-items:center;color:var(--ink2);flex:none}
+
+/* ---------- content ---------- */
+.wrap{max-width:920px;margin:0 auto;padding:0 40px 140px}
+.hero{padding:40px 0 24px;border-bottom:1px solid var(--line)}
+.hero-top{display:flex;gap:32px;align-items:flex-start}
+.hero-main{flex:1;min-width:0}
+.hero .kicker{font-family:var(--mono);font-size:11.5px;letter-spacing:.26em;color:var(--accent);text-transform:uppercase}
+.hero h1{
+  font-family:var(--serif);font-size:56px;line-height:1.25;font-weight:500;
+  letter-spacing:.14em;margin:10px 0 6px;
+}
+.hero h1 ruby rt{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.06em;font-weight:400}
+.hero .meta{font-size:12.5px;color:var(--ink3);display:flex;gap:16px;flex-wrap:wrap}
+.hero .meta span::before{content:"·";margin-right:7px;opacity:.5}
+.hero .meta span:first-child::before{content:none}
+.hero-side{flex:none;width:186px;padding-top:6px}
+.ringwrap{position:relative;width:76px;height:76px;margin-bottom:10px}
+.ringwrap svg{display:block;width:76px;height:76px}
+.ringwrap b{
+  position:absolute;inset:0;display:grid;place-items:center;
+  font-family:var(--mono);font-size:15px;font-weight:500;color:var(--ink)
+}
+.ringwrap span{position:absolute;left:0;right:0;bottom:-2px;text-align:center;font-size:10px;color:var(--ink3);letter-spacing:.12em}
+.milestones{list-style:none;margin:0;padding:0;display:grid;gap:3px}
+.milestones li{
+  display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink3);
+  padding:3px 6px;border-radius:6px;cursor:pointer
+}
+.milestones li:hover{background:var(--accent-soft);color:var(--ink2)}
+.milestones li i{
+  width:12px;height:12px;border-radius:50%;border:1px solid var(--line2);flex:none;
+  font-style:normal;font-size:9px;display:grid;place-items:center;color:transparent
+}
+.milestones li.done{color:var(--jade)}
+.milestones li.done i{background:var(--jade);border-color:var(--jade);color:#fff}
+
+.toc{display:flex;flex-wrap:wrap;gap:6px;margin-top:22px}
+.toc a,.toc button{
+  font-size:12.5px;padding:5px 11px;border-radius:999px;background:var(--card);
+  border:1px solid var(--line);color:var(--ink2)
+}
+.toc a:hover,.toc button:hover{border-color:var(--accent);color:var(--accent)}
+.toc button.special{border-style:dashed;color:var(--jade);border-color:var(--jade-soft)}
+.toc button.special:hover{border-color:var(--jade)}
+
+.sec{padding:38px 0 6px;border-bottom:1px solid var(--line);scroll-margin-top:80px}
+.sec:last-of-type{border-bottom:none}
+.sec-h{display:flex;align-items:baseline;gap:12px;margin-bottom:6px}
+.sec-num{
+  font-family:var(--serif);font-size:13px;color:var(--accent);letter-spacing:.2em;
+  border:1px solid var(--accent);border-radius:50%;width:26px;height:26px;
+  display:grid;place-items:center;flex:none;line-height:1
+}
+.sec-h h2{font-family:var(--serif);font-size:22px;font-weight:500;letter-spacing:.1em;margin:0}
+.sec-sub{font-size:12.5px;color:var(--ink3);margin:0 0 20px 38px}
+.lead{font-size:15px;color:var(--ink2);line-height:1.95;margin:0 0 18px;text-align:justify}
+
+/* ruby */
+.ruby-line{line-height:2.6}
+ruby{ruby-position:over}
+ruby rt{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:0;font-weight:400;opacity:.9}
+html[data-hide-jp="1"] ruby rt{display:none}
+html[data-hide-jp="1"] .ruby-line{line-height:1.75}
+
+/* goals */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:8px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px}
+.panel h4{margin:0 0 10px;font-size:12px;letter-spacing:.16em;color:var(--ink3);font-weight:500;font-family:var(--sans)}
+.panel ul{margin:0;padding-left:0;list-style:none}
+.panel ul li{position:relative;padding-left:16px;font-size:13.5px;line-height:1.85;color:var(--ink2)}
+.panel ul li::before{content:"";position:absolute;left:2px;top:.72em;width:5px;height:5px;background:var(--accent);border-radius:1px;transform:rotate(45deg)}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12.5px;color:var(--ink2);margin-top:12px}
+.flow i{font-style:normal;padding:3px 9px;background:var(--jade-soft);color:var(--jade);border-radius:5px}
+.flow em{font-style:normal;color:var(--ink3);font-family:var(--mono)}
+
+/* sentence card */
+.sent{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:16px 18px 14px;margin-bottom:10px;position:relative;
+  transition:border-color .15s, box-shadow .15s;
+}
+.sent:hover{border-color:var(--line2)}
+.sent.playing{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.sent.pinned{border-color:var(--jade);box-shadow:0 0 0 3px var(--jade-soft)}
+.sent-top{display:flex;gap:12px;align-items:flex-start}
+.sent-no{font-family:var(--mono);font-size:11px;color:var(--ink3);padding-top:14px;width:22px;flex:none}
+.sent-body{flex:1;min-width:0}
+.sent-jp{
+  font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.05em;
+  line-height:1.6;margin-bottom:3px;overflow-wrap:anywhere;transition:color .18s
+}
+.sent-yue{font-family:var(--serif);font-size:21px;letter-spacing:.04em;color:var(--ink);line-height:1.6;transition:color .18s}
+.sent-yue.playable{cursor:pointer}
+html[data-hide-jp="1"] .sent-jp{display:none}
+html[data-mask="hanzi"] .sent-yue:not(:hover){color:transparent}
+html[data-mask="hanzi"] .sent-yue:hover{color:var(--ink2)}
+html[data-mask="jp"] .sent-jp:not(:hover){color:transparent}
+html[data-mask="jp"] .sent-jp:hover{color:var(--accent)}
+.sent-cmn{
+  font-size:13px;color:var(--ink3);margin-top:2px;line-height:1.6;
+  padding-top:8px;border-top:1px dashed var(--line);
+}
+html[data-hide-cmn="1"] .sent-cmn{display:none}
+.sent-tip{
+  font-size:12.5px;color:var(--ink2);line-height:1.8;margin-top:10px;
+  padding:9px 12px;background:var(--jade-soft);border-radius:8px;
+}
+.sent-tip::before{content:"要點";font-family:var(--mono);font-size:10px;color:var(--jade);letter-spacing:.14em;margin-right:8px}
+.sent-act{display:flex;gap:5px;flex:none;padding-top:8px}
+.icb{
+  width:31px;height:31px;border-radius:8px;border:1px solid var(--line2);
+  display:grid;place-items:center;color:var(--ink2);font-size:12px;background:var(--card)
+}
+.icb:hover{border-color:var(--accent);color:var(--accent)}
+.icb.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.sent-note{display:none;margin-top:10px}
+.sent-note.show{display:block}
+.sent-note textarea{
+  width:100%;min-height:62px;resize:vertical;border:1px solid var(--line2);border-radius:8px;
+  background:var(--paper);color:var(--ink);padding:10px 12px;font-family:var(--sans);font-size:13px;line-height:1.7
+}
+.sent-note textarea:focus{outline:none;border-color:var(--accent)}
+
+/* playbar */
+.playbar{
+  position:sticky;bottom:16px;z-index:15;margin-top:16px;
+  display:flex;gap:6px;align-items:center;flex-wrap:wrap;
+  background:var(--card);border:1px solid var(--line2);border-radius:999px;
+  padding:7px 8px;box-shadow:0 6px 24px rgba(0,0,0,.07);width:fit-content;max-width:100%
+}
+.pb-main{
+  display:flex;align-items:center;gap:7px;background:var(--accent);color:#fff;
+  padding:7px 16px;border-radius:999px;font-size:13px;letter-spacing:.05em;white-space:nowrap
+}
+.pb-main:hover{filter:brightness(1.08)}
+.pb-main.shadow{background:var(--jade)}
+.pb-btn{font-size:12.5px;padding:6px 11px;border-radius:999px;color:var(--ink2);white-space:nowrap}
+.pb-btn:hover{background:var(--accent-soft);color:var(--accent)}
+.pb-btn.on{background:var(--ink);color:var(--paper)}
+.pb-sep{width:1px;height:18px;background:var(--line);flex:none}
+
+/* video */
+.videocard{margin-top:26px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--card);scroll-margin-top:80px}
+.video-head{display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.video-head b{font-size:13.5px;font-weight:500;letter-spacing:.04em}
+.video-head .vhint{font-size:12px;color:var(--ink3)}
+.badge{
+  font-family:var(--mono);font-size:10px;letter-spacing:.12em;padding:3px 8px;border-radius:4px;
+  background:var(--jade-soft);color:var(--jade)
+}
+.badge.lock{background:var(--accent-soft);color:var(--accent)}
+.ratechips{margin-left:auto;display:flex;gap:4px}
+.ratechips button{font-family:var(--mono);font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid var(--line);color:var(--ink3)}
+.ratechips button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.video-stage{position:relative;background:#0E0D0B}
+.video-stage video{display:block;width:100%;max-height:520px;background:#000}
+.vid-err{padding:22px;color:#E0B4A8;font-size:13px;line-height:1.9;background:#1a1210}
+.vid-err code{font-family:var(--mono);font-size:11px;color:#F0997B;word-break:break-all}
+.lockmask{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:12px;padding:48px 24px;text-align:center;color:#CFC6B6;
+  background:repeating-linear-gradient(45deg,#1a1815,#1a1815 10px,#22201c 10px,#22201c 20px)
+}
+.lockmask .lk{font-size:26px;opacity:.7}
+.lockmask p{margin:0;font-size:13px;line-height:1.8;max-width:420px}
+.lockmask .hint{font-size:12px;color:#8E8577}
+.btn-solid{background:var(--accent);color:#fff;padding:9px 20px;border-radius:999px;font-size:13px;letter-spacing:.05em}
+.btn-solid:hover{filter:brightness(1.08)}
+.video-foot{padding:12px 18px 14px;border-top:1px solid var(--line)}
+.video-foot .vnote{font-size:12.5px;color:var(--ink3);line-height:1.85;margin:0 0 10px}
+.markbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.markbar .mk{
+  display:flex;align-items:center;gap:6px;font-size:12px;padding:5px 12px;border-radius:999px;
+  border:1px solid var(--jade);color:var(--jade);background:var(--jade-soft)
+}
+.markbar .mk:hover{background:var(--jade);color:#fff}
+.markbar select{
+  font-family:inherit;font-size:12px;padding:5px 8px;border-radius:8px;
+  border:1px solid var(--line2);background:var(--paper);color:var(--ink2)
+}
+.markbar .mh{font-size:11.5px;color:var(--ink3)}
+.marklist{margin-top:8px;display:grid;gap:5px}
+.markrow{display:flex;gap:8px;align-items:center;font-size:12.5px}
+.markrow .mt{font-family:var(--mono);font-size:11.5px;color:var(--accent);border:1px solid var(--line2);border-radius:5px;padding:1px 6px;flex:none}
+.markrow .mt:hover{border-color:var(--accent);background:var(--accent-soft)}
+.markrow .ms{font-family:var(--mono);font-size:10.5px;color:var(--jade);flex:none}
+.markrow input{
+  flex:1;min-width:0;font-family:inherit;font-size:12.5px;padding:3px 8px;border-radius:6px;
+  border:1px solid transparent;background:transparent;color:var(--ink2)
+}
+.markrow input:hover{border-color:var(--line)}
+.markrow input:focus{outline:none;border-color:var(--accent);background:var(--paper)}
+.markrow .mx{color:var(--ink3);font-size:14px;flex:none}
+.markrow .mx:hover{color:var(--accent)}
+
+/* vocab */
+.vgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.vcard{border:1px solid var(--line);border-radius:11px;padding:11px 14px 12px;background:var(--card);position:relative;cursor:pointer;transition:border-color .15s,background .15s}
+.vcard:hover{border-color:var(--accent);background:var(--accent-soft)}
+.vtop{display:flex;align-items:baseline;gap:8px;min-width:0;padding-right:22px}
+.vcard .vw{font-family:var(--serif);font-size:18px;letter-spacing:.04em;line-height:1.35}
+.vcard .vj{font-family:var(--mono);font-size:10.5px;color:var(--accent);letter-spacing:.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html[data-hide-jp="1"] .vcard .vj{display:none}
+.vcard .vc{font-size:12.5px;color:var(--ink2);margin-top:5px;line-height:1.55}
+.vcard .vx{font-size:11px;color:var(--ink3);margin-top:2px;font-style:normal;line-height:1.5}
+
+.vcard .star{position:absolute;top:8px;right:9px;color:var(--ink3);font-size:14px;padding:0 2px;line-height:1}
+.vcard .star.on{color:var(--gold)}
+.numrow{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 18px}
+.numcell{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 12px;text-align:center;min-width:56px;cursor:pointer}
+.numcell:hover{border-color:var(--accent)}
+.numcell b{display:block;font-family:var(--serif);font-size:20px;font-weight:500;line-height:1.3}
+.numcell i{display:block;font-family:var(--mono);font-size:10.5px;color:var(--accent);font-style:normal}
+.numcell u{display:block;font-size:10.5px;color:var(--ink3);text-decoration:none}
+
+/* knowledge */
+.kcard{border-left:2px solid var(--accent);padding:2px 0 2px 18px;margin-bottom:26px}
+.kcard h3{font-family:var(--serif);font-size:17px;font-weight:500;letter-spacing:.05em;margin:0 0 8px}
+.kcard p{margin:0 0 10px;font-size:14px;line-height:1.9;color:var(--ink2);text-align:justify}
+.exlist{display:grid;gap:6px;margin-top:10px}
+.ex{
+  display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr) auto;gap:10px;
+  align-items:center;padding:8px 12px;border-radius:8px;
+  background:var(--paper);border:1px solid var(--line);font-size:13.5px
+}
+.exm{display:flex;flex-direction:column;min-width:0}
+.ex .ey{font-family:var(--serif);font-size:15px;line-height:1.5;overflow-wrap:anywhere}
+.ex .ej{font-family:var(--mono);font-size:10.5px;color:var(--accent);opacity:.85;line-height:1.5;overflow-wrap:anywhere}
+html[data-hide-jp="1"] .ex .ej{display:none}
+html[data-hide-cmn="1"] .ex{grid-template-columns:minmax(0,1fr) auto}
+html[data-hide-cmn="1"] .ex .ec{display:none}
+.ex .ec{color:var(--ink3);font-size:12.5px;text-align:right;overflow-wrap:anywhere}
+.ex .eb{padding:2px 8px;border-radius:5px;border:1px solid var(--line2);font-size:11px;color:var(--ink3)}
+.ex .eb:hover{border-color:var(--accent);color:var(--accent)}
+.ex.clickable{cursor:pointer;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);transition:border-color .15s,background .15s}
+.ex.clickable:hover{border-color:var(--line2);background:var(--accent-soft)}
+.ex.clickable.playing{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+
+/* tone table */
+table.tone{width:100%;border-collapse:collapse;font-size:13px;margin:6px 0 14px}
+table.tone th{text-align:left;font-weight:500;font-size:11.5px;letter-spacing:.06em;color:var(--ink3);padding:8px 10px;border-bottom:1px solid var(--line2);white-space:nowrap}
+table.tone td{padding:10px;border-bottom:1px solid var(--line);vertical-align:middle}
+table.tone tr:last-child td{border-bottom:none}
+.tone-no{font-family:var(--mono);color:var(--accent);font-weight:600;font-size:15px}
+.tone-val{font-family:var(--mono);font-size:12px;color:var(--ink2)}
+.tone-ex{font-family:var(--serif);font-size:17px}
+.tone-desc{font-size:12.5px;color:var(--ink3)}
+.cmp{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.cmpcell{border:1px solid var(--line);border-radius:9px;padding:7px 12px;text-align:center;background:var(--card);cursor:pointer}
+.cmpcell:hover{border-color:var(--accent)}
+.cmpcell b{display:block;font-family:var(--serif);font-size:19px;font-weight:500}
+.cmpcell i{display:block;font-family:var(--mono);font-size:10.5px;color:var(--accent);font-style:normal}
+.note-line{font-size:12.5px;color:var(--ink3);line-height:1.85;padding:10px 14px;border-left:2px solid var(--line2);margin:14px 0}
+
+/* exercises */
+.quizbar{display:flex;align-items:center;gap:14px;font-size:12.5px;color:var(--ink3);margin-bottom:12px}
+.quizbar b{font-family:var(--mono);color:var(--ink)}
+.quizbar .qreset{font-size:12px;padding:3px 10px;border:1px solid var(--line2);border-radius:999px;color:var(--ink2)}
+.quizbar .qreset:hover{border-color:var(--accent);color:var(--accent)}
+.q{border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:12px;background:var(--card)}
+.q .qh{display:flex;gap:8px;align-items:center;margin-bottom:9px}
+.q .qn{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--jade);background:var(--jade-soft);padding:2px 8px;border-radius:4px;flex:none}
+.q .qt{font-size:14px;line-height:1.7}
+.opts{display:grid;gap:6px;margin-top:10px}
+.opt{
+  text-align:left;padding:9px 14px;border:1px solid var(--line2);border-radius:9px;
+  font-size:13.5px;color:var(--ink2);background:var(--paper);font-family:var(--serif);letter-spacing:.03em
+}
+.opt:hover{border-color:var(--accent)}
+.opt.right{border-color:var(--jade);background:var(--jade-soft);color:var(--jade)}
+.opt.wrong{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.why{display:none;margin-top:10px;font-size:12.5px;color:var(--ink2);line-height:1.8;padding:9px 12px;background:var(--paper);border-radius:8px;border:1px dashed var(--line2)}
+.why.show{display:block}
+
+/* 右側豎向目錄 */
+.wrap.with-toc{
+  max-width:1000px;display:grid;
+  grid-template-columns:minmax(0,1fr) 184px;column-gap:30px;
+  align-items:start
+}
+.wrap.with-toc .hero{grid-column:1 / -1}
+.lesson-body{grid-column:1;min-width:0}
+.toc-side{
+  grid-column:2;align-self:start;position:sticky;top:88px;
+  max-height:calc(100vh - 116px);overflow-y:auto;padding:4px 0 12px;
+  scrollbar-width:thin
+}
+.ts-h{
+  font-size:10.5px;letter-spacing:.18em;color:var(--ink3);
+  margin-bottom:8px;padding-left:11px
+}
+.ts-item{
+  display:block;font-size:12.5px;line-height:1.45;color:var(--ink3);
+  padding:5px 10px 5px 11px;border-left:2px solid var(--line);
+  text-decoration:none;transition:color .15s,border-color .15s,background .15s
+}
+.ts-item:hover{color:var(--ink);border-left-color:var(--line2);background:var(--accent-soft)}
+.ts-item.on{color:var(--accent);border-left-color:var(--accent);font-weight:500}
+
+@media (max-width:1180px){
+  .wrap.with-toc{display:block;max-width:920px}
+  .toc-side{display:none}
+}
+
+/* passage */
+.passage{border:1px solid var(--line);border-radius:var(--r);background:var(--card);padding:16px 18px 10px}
+.passage-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.passage-head b{font-size:12.5px;letter-spacing:.08em;color:var(--ink3);font-weight:500}
+.pb-mini{margin-left:auto;font-size:12px;padding:5px 14px;border-radius:999px;background:var(--accent);color:#fff}
+.pb-mini:hover{filter:brightness(1.08)}
+.plines{list-style:none;margin:0;padding:0}
+.pline{
+  display:flex;gap:12px;align-items:flex-start;padding:11px 14px;margin-bottom:8px;
+  border:1px solid var(--line);border-radius:10px;background:var(--paper);
+  transition:border-color .15s, box-shadow .15s
+}
+.pline:hover{border-color:var(--line2)}
+.pline.playing{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.pline .pl-no{font-family:var(--mono);font-size:11px;color:var(--ink3);width:14px;flex:none;padding-top:12px}
+.pline .pl-body{flex:1;min-width:0}
+.pline .pl-yue{font-family:var(--serif);font-size:19px;letter-spacing:.03em;line-height:1.6;transition:color .18s}
+html[data-mask="hanzi"] .pline .pl-yue:not(:hover){color:transparent}
+html[data-mask="hanzi"] .pline .pl-yue:hover{color:var(--ink2)}
+
+/* notes */
+.notebox textarea{
+  width:100%;min-height:150px;border:1px solid var(--line2);border-radius:12px;
+  background:var(--card);color:var(--ink);padding:16px 18px;
+  font-family:var(--sans);font-size:14px;line-height:1.9;resize:vertical
+}
+.notebox textarea:focus{outline:none;border-color:var(--accent)}
+.notebar{display:flex;gap:8px;align-items:center;margin-top:10px;font-size:12px;color:var(--ink3);flex-wrap:wrap}
+
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(20,18,15,.42);opacity:0;pointer-events:none;transition:opacity .2s;z-index:40}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{
+  position:fixed;top:0;right:0;height:100vh;width:420px;max-width:92vw;background:var(--paper);
+  border-left:1px solid var(--line2);z-index:41;transform:translateX(102%);
+  transition:transform .26s cubic-bezier(.3,.8,.3,1);display:flex;flex-direction:column;
+  box-shadow:-8px 0 40px rgba(0,0,0,.08)
+}
+.drawer.on{transform:none}
+.drawer-h{padding:20px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.drawer-h b{font-family:var(--serif);font-size:17px;font-weight:500;letter-spacing:.1em}
+.drawer-h button{margin-left:auto;font-size:20px;color:var(--ink3)}
+.drawer-b{padding:16px 22px 40px;overflow-y:auto;flex:1}
+.witem{display:flex;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);align-items:flex-start}
+.witem b{font-family:var(--serif);font-size:18px;font-weight:500}
+.witem p{margin:2px 0 0;font-size:12.5px;color:var(--ink3);line-height:1.7}
+.witem button{margin-left:auto;color:var(--ink3);font-size:15px;flex:none}
+.witem button:hover{color:var(--accent)}
+.empty{color:var(--ink3);font-size:13px;text-align:center;padding:48px 0;line-height:1.9}
+
+/* lightbox */
+.lightbox{
+  position:fixed;inset:0;z-index:50;background:rgba(18,16,13,.9);
+  display:none;flex-direction:column;padding:18px
+}
+.lightbox.on{display:flex}
+.lb-bar{display:flex;align-items:center;gap:12px;color:#D8CFBE;font-size:13px;font-family:var(--mono);letter-spacing:.1em;padding:0 4px 12px}
+.lb-bar button{margin-left:auto;color:#D8CFBE;font-size:22px;line-height:1}
+.lb-body{flex:1;min-height:0;display:grid;place-items:center;overflow:auto}
+.lb-body img{max-width:100%;max-height:100%;object-fit:contain;background:#fff;border-radius:4px}
+.lb-nav{display:flex;justify-content:center;gap:10px;padding-top:12px}
+.lb-nav button{
+  color:#D8CFBE;font-size:13px;padding:6px 16px;border:1px solid rgba(216,207,190,.3);border-radius:999px
+}
+.lb-nav button:hover{border-color:#D8CFBE;background:rgba(216,207,190,.1)}
+
+/* 懸浮朗讀球 */
+.fball{position:fixed;right:22px;bottom:22px;z-index:56;display:none}
+.fball.on{display:block}
+.fb-ball{
+  width:56px;height:56px;border-radius:50%;background:var(--ink);position:relative;
+  display:grid;place-items:center;box-shadow:0 10px 28px rgba(0,0,0,.24);
+  transition:transform .15s
+}
+.fb-ball:hover{transform:scale(1.06)}
+.fb-ring{position:absolute;inset:0;width:56px;height:56px;pointer-events:none}
+.fb-bars{display:flex;gap:3px;align-items:flex-end;height:15px}
+.fb-bars i{width:3px;border-radius:2px;background:var(--paper);height:9px;animation:fbwave .9s ease-in-out infinite}
+.fb-bars i:nth-child(1){animation-delay:0s}
+.fb-bars i:nth-child(2){animation-delay:.15s}
+.fb-bars i:nth-child(3){animation-delay:.3s}
+@keyframes fbwave{0%,100%{height:5px}50%{height:15px}}
+body.fb-paused .fb-bars i{animation-play-state:paused;height:7px}
+.fb-panel{
+  position:absolute;right:0;bottom:70px;width:292px;background:var(--card);
+  border:1px solid var(--line2);border-radius:14px;padding:12px 14px 11px;
+  box-shadow:0 14px 40px rgba(0,0,0,.18);display:none
+}
+.fball.expanded .fb-panel{display:block}
+.fb-head{display:flex;align-items:center;font-size:11px;color:var(--ink3);letter-spacing:.05em;margin-bottom:7px}
+.fb-head .fb-loc{margin-left:auto;font-size:11px;border:1px solid var(--line2);border-radius:999px;padding:1px 9px;color:var(--ink3)}
+.fb-head .fb-loc:hover{border-color:var(--accent);color:var(--accent)}
+.fb-text{
+  font-family:var(--serif);font-size:15px;line-height:1.65;color:var(--ink);
+  max-height:76px;overflow:hidden;margin-bottom:10px;word-break:break-word
+}
+.fb-ctrl{display:flex;gap:6px;align-items:center}
+.fb-ctrl button{
+  flex:1;height:32px;border-radius:9px;border:1px solid var(--line2);
+  color:var(--ink2);font-size:13px;display:grid;place-items:center
+}
+.fb-ctrl button:hover{border-color:var(--accent);color:var(--accent)}
+.fb-ctrl .fb-play{background:var(--accent);border-color:var(--accent);color:#fff;flex:1.5}
+.fb-ctrl .fb-play:hover{filter:brightness(1.08);color:#fff}
+body.fb-on .playbar{bottom:86px}
+@media (max-width:620px){
+  .fb-panel{width:min(280px,calc(100vw - 44px))}
+  .fball{right:16px;bottom:16px}
+}
+
+/* toast */
+.toast{
+  position:fixed;left:50%;bottom:34px;transform:translate(-50%,20px);z-index:60;
+  background:var(--ink);color:var(--paper);padding:9px 20px;border-radius:999px;
+  font-size:13px;opacity:0;pointer-events:none;transition:all .25s;max-width:80vw;text-align:center
+}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* home */
+.home-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px}
+.hcard{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--card)}
+.hcard b{display:block;font-family:var(--serif);font-size:16px;font-weight:500;margin-bottom:4px}
+.hcard p{margin:0;font-size:12.5px;color:var(--ink3);line-height:1.7}
+
+.foot{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);font-size:12px;color:var(--ink3);line-height:1.9}
+
+/* dialogue */
+.dlg-scene{font-size:13px;color:var(--ink3);margin:0 0 14px;padding:9px 14px;background:var(--card);border:1px solid var(--line);border-radius:9px}
+.dlgs{display:grid;gap:8px}
+.dline{
+  display:flex;gap:12px;align-items:flex-start;padding:12px 16px;
+  border:1px solid var(--line);border-radius:12px;background:var(--card);
+  transition:border-color .15s, box-shadow .15s
+}
+.dline:hover{border-color:var(--line2)}
+.dline.playing{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.dspk{
+  flex:none;min-width:44px;padding:2px 9px;border-radius:6px;text-align:center;
+  font-size:11.5px;font-family:var(--mono);letter-spacing:.04em;margin-top:12px
+}
+.dline.a .dspk{background:var(--accent-soft);color:var(--accent)}
+.dline.b .dspk{background:var(--jade-soft);color:var(--jade)}
+.dline.c .dspk{background:var(--line);color:var(--ink2)}
+.dline .dbody{flex:1;min-width:0}
+.dline .dyue{font-family:var(--serif);font-size:19px;letter-spacing:.03em;line-height:1.6;transition:color .18s}
+.dline .dyue.playable{cursor:pointer}
+html[data-mask="hanzi"] .dline .dyue:not(:hover){color:transparent}
+html[data-mask="hanzi"] .dline .dyue:hover{color:var(--ink2)}
+
+.supgroup{margin-bottom:16px}
+.supgroup h4{margin:0 0 8px;font-size:12px;letter-spacing:.14em;color:var(--ink3);font-weight:500}
+
+/* 區塊朗讀 */
+.sec-read{
+  margin-left:auto;font-size:11.5px;padding:3px 11px;border-radius:999px;
+  border:1px solid var(--line2);color:var(--ink3);white-space:nowrap;letter-spacing:.02em
+}
+.sec-read:hover{border-color:var(--accent);color:var(--accent)}
+.sec-read.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.k-read{
+  float:right;margin-left:10px;width:24px;height:24px;border-radius:50%;
+  border:1px solid var(--line2);color:var(--ink3);font-size:10px;
+  display:inline-grid;place-items:center;vertical-align:middle
+}
+.k-read:hover{border-color:var(--accent);color:var(--accent)}
+.k-read.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.reading{background:var(--accent-soft);box-shadow:0 0 0 4px var(--accent-soft);border-radius:4px}
+html[data-theme="dark"] .reading{background:#33211A;box-shadow:0 0 0 4px #33211A}
+
+/* home mini list */
+.minilist{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.mini{
+  font-size:12px;padding:3px 10px;border-radius:999px;border:1px solid var(--line2);
+  color:var(--ink2);background:var(--paper)
+}
+.mini:hover{border-color:var(--accent);color:var(--accent)}
+
+@media (max-width:1080px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .sidebar{display:none}
+  .sidebar.open{
+    display:block;position:fixed;top:0;left:0;bottom:0;width:280px;height:100vh;z-index:45;
+    box-shadow:12px 0 40px rgba(0,0,0,.18);border-right:1px solid var(--line2)
+  }
+  .menu-btn{display:grid}
+  .wrap,.topbar-in{padding-left:22px;padding-right:22px}
+  .hero h1{font-size:40px}
+  .hero-top{flex-direction:column;gap:18px}
+  .hero-side{width:100%;display:flex;gap:20px;align-items:center}
+  .ringwrap{margin-bottom:0;flex:none}
+  .grid2,.home-cards{grid-template-columns:1fr}
+  .ex{grid-template-columns:minmax(0,1fr) auto}
+  .ex .ec{text-align:left;grid-column:1/-1}
+  table.tone{font-size:12px}
+  table.tone th,table.tone td{padding:7px 5px}
+  .tone-desc{font-size:11.5px}
+}
+@media (max-width:560px){
+  .vgrid{grid-template-columns:1fr}
+}
+@media (max-width:620px){
+  .chip-tools .tool[data-act="t-jp"],.chip-tools .tool[data-act="t-cmn"]{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;scroll-behavior:auto!important}
+}
+
+/* 語音設定面板 */
+.vovl{position:fixed;inset:0;background:rgba(20,16,12,.42);z-index:120;display:none}
+.vovl.on{display:block}
+.vpanel{
+  position:fixed;z-index:121;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:min(560px,92vw);max-height:82vh;overflow:auto;
+  background:var(--card);border:1px solid var(--line2);border-radius:16px;
+  box-shadow:0 24px 60px rgba(0,0,0,.28);padding:22px 24px 18px;display:none
+}
+.vpanel.on{display:block}
+.vpanel h3{margin:0 0 6px;font-size:17px;font-weight:600;color:var(--ink)}
+.vpanel .vsub{font-size:12.5px;line-height:1.8;color:var(--ink3);margin:0 0 16px}
+.vgroup{margin-bottom:16px}
+.vgroup h4{margin:0 0 8px;font-size:12px;letter-spacing:.08em;color:var(--ink3);font-weight:600}
+.vopt{
+  display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:9px;cursor:pointer;
+  border:1px solid var(--line);background:var(--paper);margin-bottom:6px;font-size:13px;color:var(--ink2)
+}
+.vopt:hover{border-color:var(--line2)}
+.vopt.on{border-color:var(--accent);background:var(--accent-soft);color:var(--ink)}
+.vopt .vdot{width:12px;height:12px;border-radius:50%;border:2px solid var(--line2);flex:none}
+.vopt.on .vdot{border-color:var(--accent);background:var(--accent)}
+.vopt .vn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vopt .vl{font-family:var(--mono);font-size:10.5px;color:var(--ink3);flex:none}
+.vwarn{font-size:12px;line-height:1.8;color:#9a4a2f;background:#fbf1ec;border:1px solid #f0d8cc;
+  border-radius:9px;padding:9px 12px;margin:6px 0 0}
+.vfoot{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}
+.vbtn{padding:8px 18px;border-radius:9px;border:1px solid var(--line2);background:var(--card);
+  color:var(--ink2);font-size:13px;cursor:pointer}
+.vbtn.main{background:var(--accent);border-color:var(--accent);color:#fff}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <button class="brand" data-act="home">
+      <b>粵語自習室</b>
+      <span>香港話 · 三十課</span>
+    </button>
+    <nav id="nav"></nav>
+    <div class="side-foot">
+      <button data-act="open-vocab">生詞本 <b id="vw-count">0</b></button>
+      <button data-act="open-notes">我的筆記</button>
+      <button data-act="theme">夜讀模式</button>
+      <button data-act="keys">快捷鍵</button>
+    </div>
+  </aside>
+
+  <main>
+    <div class="topbar">
+      <div class="topbar-in">
+        <button class="menu-btn" data-act="menu" aria-label="課程目錄">☰</button>
+        <div class="crumb" id="crumb"></div>
+        <div class="spacer"></div>
+        <div class="chip-tools">
+          <button class="tool active" data-act="t-jp">粵拼</button>
+          <button class="tool active" data-act="t-cmn">譯文</button>
+          <button class="tool" data-act="voice-panel" title="選擇朗讀語音（不同瀏覽器音色不同）">語音</button>
+          <button class="tool" data-act="explain-lang" title="講解的朗讀語言">講解：普</button>
+          <button class="tool" data-act="theme">夜讀</button>
+        </div>
+      </div>
+      <div class="progress-line"><i id="pl"></i></div>
+    </div>
+    <div class="wrap" id="view"></div>
+  </main>
+</div>
+
+<div class="vovl" id="vovl" data-act="voice-close"></div>
+<aside class="vpanel" id="vpanel" aria-label="朗讀語音設定">
+  <h3>朗讀語音</h3>
+  <p class="vsub">課文、短文、會話用的是站內錄音，不受這裡影響。<br>
+     講解、詞彙、例句則用下面選的語音——不同瀏覽器自帶的音色差別很大，選一個聽得順的。</p>
+  <div id="vbody"></div>
+  <div class="vfoot">
+    <button class="vbtn" data-act="voice-close">關閉</button>
+  </div>
+</aside>
+
+<div class="scrim" id="scrim" data-act="close-all"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-h"><b id="drawer-title">生詞本</b><button data-act="close-drawer" aria-label="關閉">×</button></div>
+  <div class="drawer-b" id="drawer-body"></div>
+</aside>
+
+<div class="lightbox" id="lightbox">
+  <div class="lb-bar"><span id="lb-label">教材原頁</span><button data-act="lb-close" aria-label="關閉">×</button></div>
+  <div class="lb-body"><img id="lb-img" alt="教材原頁"></div>
+  <div class="lb-nav">
+    <button data-act="lb-prev">‹ 上一頁</button>
+    <button data-act="lb-next">下一頁 ›</button>
+  </div>
+</div>
+
+<div class="fball" id="fball">
+  <div class="fb-panel">
+    <div class="fb-head"><span id="fb-label">朗讀中</span><button class="fb-loc" data-act="fb-locate">定位</button></div>
+    <div class="fb-text" id="fb-text">—</div>
+    <div class="fb-ctrl">
+      <button data-act="fb-prev" aria-label="上一句">‹</button>
+      <button class="fb-play" data-act="fb-play" aria-label="暫停或繼續"><span id="fb-icon">❚❚</span></button>
+      <button data-act="fb-next" aria-label="下一句">›</button>
+      <button data-act="fb-stop" aria-label="停止朗讀">✕</button>
+    </div>
+  </div>
+  <button class="fb-ball" data-act="fb-expand" aria-label="朗讀控制">
+    <svg class="fb-ring" viewBox="0 0 44 44" aria-hidden="true">
+      <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(250,247,241,.22)" stroke-width="2.5"/>
+      <circle id="fb-ring" cx="22" cy="22" r="18" fill="none" stroke="#FAF7F1" stroke-width="2.5"
+        stroke-linecap="round" stroke-dasharray="113.1" stroke-dashoffset="113.1" transform="rotate(-90 22 22)"/>
+    </svg>
+    <span class="fb-bars"><i></i><i></i><i></i></span>
+  </button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="data/course.js?v=43"></script>
+<script src="data/lessons.js?v=43"></script>
+<script>
+(function(){
+"use strict";
+
+/* ============ 數據 ============ */
+var DATA = window.LESSONS || {};
+var C = window.COURSE || {volumes:[]};
+var CUR = null, LID = "";
+
+/* ============ 存儲 ============ */
+var mem = {};
+var STORE_OK = true;
+try { localStorage.setItem("yue.__t","1"); localStorage.removeItem("yue.__t"); }
+catch(e){ STORE_OK = false; }
+var DB = {
+  get:function(k,d){
+    try{
+      var raw = STORE_OK ? localStorage.getItem("yue."+k) : mem[k];
+      if(raw===null||raw===undefined) return d;
+      return JSON.parse(raw);
+    }catch(e){ return d; }
+  },
+  set:function(k,v){
+    var s = JSON.stringify(v);
+    if(STORE_OK){ try{ localStorage.setItem("yue."+k,s); }catch(e){ mem[k]=s; } }
+    else { mem[k]=s; }
+  }
+};
+
+var state = {
+  view:"lesson",
+  last: DB.get("last", null),
+  prefs: DB.get("prefs", {jp:true, cmn:true, theme:"light", rate:"normal", shadow:false, mask:"", explain:"yue"}),
+  notes: DB.get("notes", {lesson:{}, sent:{}}),
+  words: DB.get("words", []),
+  prog:  DB.get("prog", {}),
+  quiz:  DB.get("quiz", {}),
+  marks: DB.get("marks", [])
+};
+if(!state.prefs.mask) state.prefs.mask = "";
+if(state.prefs.explainV !== 2){ state.prefs.explain = "yue"; state.prefs.explainV = 2; DB.set("prefs", state.prefs); }
+
+/* ============ 小工具 ============ */
+function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];}); }
+function $(sel,root){ return (root||document).querySelector(sel); }
+function $$(sel,root){ return Array.prototype.slice.call((root||document).querySelectorAll(sel)); }
+function pad2(n){ return n<10 ? "0"+n : ""+n; }
+function pad3(n){ return String(n).padStart(3,"0"); }
+function CN(n){
+  var d = "〇一二三四五六七八九";
+  if(n<=9) return d.charAt(n);
+  if(n===10) return "十";
+  if(n<20) return "十"+d.charAt(n-10);
+  return (n<30 ? "二十"+d.charAt(n-20) : String(n));
+}
+function fmtTime(t){
+  t = Math.max(0, Math.floor(t||0));
+  return pad2(Math.floor(t/60))+":"+pad2(t%60);
+}
+var toastT;
+function toast(msg){
+  var t = $("#toast"); if(!t) return;
+  t.textContent = msg; t.classList.add("on");
+  clearTimeout(toastT); toastT = setTimeout(function(){ t.classList.remove("on"); },2000);
+}
+function ruby(tokens){
+  if(!tokens) return "";
+  return tokens.map(function(p){
+    var c = p[0], j = p[1];
+    if(!j) return c===" " ? "&#8202;" : esc(c);
+    return "<ruby>"+esc(c)+"<rt>"+j+"</rt></ruby>";
+  }).join("");
+}
+function splitSent(text){
+  return String(text||"")
+    .split(/(?<=[。！？；!?;])|\n+/)
+    .map(function(x){ return x.trim(); })
+    .filter(function(x){ return x.length > 0; });
+}
+
+function lessonById(no){ return DATA["L"+pad2(no)] || null; }
+function firstReady(){
+  var arr = Object.keys(DATA).map(function(k){ return DATA[k]; }).sort(function(a,b){ return a.no-b.no; });
+  return arr.length ? arr[0].no : null;
+}
+function pageList(L){
+  var m = String((L&&L.pages)||"").match(/(\d+)\D+(\d+)/);
+  if(!m) return [];
+  var a = +m[1], b = +m[2], out = [];
+  for(var i=a;i<=b;i++) out.push(i);
+  return out;
+}
+
+/* ============ 音頻 / TTS（統一隊列） ============ */
+var player = new Audio();
+player.preload = "auto";
+
+var tts = {
+  gen:0, voices:[], q:[], i:0, paused:false, mode:null,
+  curEl:null, curCls:"playing", gap:240, name:"", onEnd:null,
+
+  load:function(){
+    if(!("speechSynthesis" in window)) return;
+    var self=this;
+    var take=function(){ self.voices = window.speechSynthesis.getVoices() || []; };
+    take();
+    window.speechSynthesis.onvoiceschanged = take;
+  },
+  pick:function(lang){
+    var vs = this.voices || [];
+    var pref = (lang==="cmn") ? state.prefs.voiceCmn : state.prefs.voiceYue;
+    if(pref && pref!=="auto"){
+      var chosen = vs.filter(function(v){ return v.name===pref; })[0];
+      if(chosen) return chosen;
+    }
+    var want = lang==="cmn"
+      ? ["zh-CN","zh-Hans-CN","zh-SG"]
+      : ["yue","yue-Hant-HK","zh-HK","zh-Hant-HK","zh-TW"];
+    for(var i=0;i<want.length;i++){
+      var tag = want[i].toLowerCase();
+      var m = vs.filter(function(v){ return String(v.lang||"").toLowerCase()===tag; });
+      if(m.length) return m[0];
+    }
+    if(lang==="cmn") return vs.filter(function(v){ return /^zh/i.test(v.lang||""); })[0] || null;
+    var c = vs.filter(function(v){ return /cantonese|粵語|粤语/i.test(v.name||""); });
+    return c.length ? c[0] : null;
+  },
+  ready:function(cb, tries){
+    var self = this;
+    if((this.voices && this.voices.length) || (tries||0) >= 5){ cb(); return; }
+    this.voices = ("speechSynthesis" in window) ? (window.speechSynthesis.getVoices() || []) : [];
+    if(this.voices.length){ cb(); return; }
+    setTimeout(function(){ self.ready(cb, (tries||0)+1); }, 150);
+  },
+
+  start:function(items, opts){
+    opts = opts || {};
+    var vnow = $("#vid");
+    if(vnow && !vnow.paused){ try{ vnow.pause(); }catch(e){} }
+    this.gen++;
+    this._clearCur();
+    try{ player.pause(); player.removeAttribute("src"); }catch(e){}
+    if("speechSynthesis" in window) window.speechSynthesis.cancel();
+    this.q = (items||[]).filter(function(x){ return x && (x.audio || x.text); });
+    this.i = 0;
+    this.paused = false;
+    this.gap = opts.gap===undefined ? 240 : opts.gap;
+    this.name = opts.name || "朗讀";
+    this.onEnd = opts.onEnd || null;
+    if(!this.q.length){ this._finish(); return; }
+    fballShow();
+    this._step(this.gen);
+  },
+  _step:function(my){
+    var self = this;
+    if(this.gen !== my) return;
+    if(this.i >= this.q.length){ this._finish(); return; }
+    var it = this.q[this.i];
+    this.mode = it.audio ? "audio" : "say";
+    this._setCur(it);
+    fballUpdate();
+    var done = function(){
+      if(self.gen !== my) return;
+      self.i++;
+      if(self.gap > 300) setTimeout(function(){ self._step(my); }, self.gap);
+      else self._step(my);
+    };
+    if(it.audio) this._audio(it, my, done);
+    else this._sayItem(it, my, done);
+  },
+  _audio:function(it, my, done){
+    var self = this;
+    var src = (state.prefs.rate==="slow" && it.slow) ? it.slow : it.audio;
+    var fb = function(){ if(self.gen!==my) return; self._sayItem(it, my, done); };
+    player.src = src;
+    player.onended = function(){ if(self.gen!==my) return; done(); };
+    player.onerror = fb;
+    var pr = player.play();
+    if(pr && pr.catch) pr.catch(fb);
+  },
+  _sayItem:function(it, my, done){
+    var self = this;
+    var text = it.text || "";
+    if(!text){ done(); return; }
+    var lang = it.lang || "yue";
+    var tries = it._try || 0;
+    this.ready(function(){
+      if(self.gen !== my) return;
+      if(!("speechSynthesis" in window)){ done(); return; }
+      var v = self.pick(lang);
+      if(!v){
+        /* 沒有粵語音色時退回任何中文音色，避免整段朗讀直接啞掉 */
+        v = (self.voices||[]).filter(function(x){ return /^zh/i.test(x.lang||""); })[0] || null;
+        if(v) toast("找不到粵語音色，暫用其他中文音色");
+      }
+      var u = new SpeechSynthesisUtterance(text);
+      if(v){ u.voice = v; u.lang = v.lang; }
+      u.rate = state.prefs.rate==="slow" ? 0.8 : 0.98;
+      u.volume = 1;
+
+      /* 連續朗讀三個坑：
+         1) onend 內同步 speak 下一句會被瀏覽器吞掉 → 延 90ms；
+         2) 短句 onend 有時不觸發 → 看門狗按字數估時長強制推進；
+         3) utterance 被 GC 會直接靜音（高亮照走、沒有聲音）→ 用 _lastU 一直握住參考，
+            並且播出去 700ms 後若引擎仍是閒置狀態，就重試一次。 */
+      var fired = false;
+      var wd = null;
+      var next = function(){
+        if(fired) return;
+        fired = true;
+        self._lastU = null;
+        if(wd) clearTimeout(wd);
+        setTimeout(function(){ if(self.gen===my) done(); }, 90);
+      };
+      self._lastU = u;                       /* 防 GC */
+      var started = false;
+      wd = setTimeout(next, Math.max(5000, text.length * 280));
+      u.onstart = function(){ started = true; };   /* 真正出聲才算起播 */
+      u.onend = next;
+      u.onerror = next;
+
+      /* 關鍵：Edge/Chrome 在上一個 utterance 剛結束、引擎還沒收拾乾淨時直接 speak，
+         會出現「沒有聲音也沒有 onend」的死局（高亮照走、音全無）。
+         標準解法是先 cancel 清空隊列，隔一拍再 speak。 */
+      var ss = window.speechSynthesis;
+      try{ if(ss.speaking || ss.pending) ss.cancel(); }catch(e){}
+      setTimeout(function(){
+        if(self.gen !== my || fired) return;
+        try{ ss.speak(u); }catch(e){ next(); }
+      }, 140);
+
+      /* 起播檢測：900ms 內沒收到 onstart（等於沒出聲），重試一次。
+         注意不能靠 speechSynthesis.speaking —— 它常常在靜音狀態下也回 true。 */
+      setTimeout(function(){
+        if(self.gen!==my || fired || started) return;
+        if(tries >= 2){                       /* 重試兩次仍失敗 → 提示一次，交給看門狗推進 */
+          if(!self._warned){
+            self._warned = true;
+            toast("這個瀏覽器的語音引擎沒有回應，這一段可能沒有聲音");
+          }
+          return;
+        }
+        it._try = tries + 1;
+        clearTimeout(wd);
+        self._sayItem(it, my, done);
+      }, 900);
+    });
+  },
+  _setCur:function(it){
+    this._clearCur();
+    var el = it.el || (it.key ? $('[data-key="'+it.key+'"]') : null);
+    this.curEl = el;
+    this.curCls = it.cls || "playing";
+    if(el) el.classList.add(this.curCls);
+  },
+  _clearCur:function(){
+    this.curEl = null;
+    $$(".reading").forEach(function(el){ el.classList.remove("reading"); });
+    $$(".sent.playing").forEach(function(el){ el.classList.remove("playing"); });
+  },
+  _finish:function(){
+    var cb = this.onEnd, many = this.q.length > 1;
+    this._clearCur();
+    this.q = []; this.i = 0; this.paused = false; this.onEnd = null;
+    fballHide();
+    if(many) toast("朗讀完畢");
+    if(cb) cb();
+  },
+
+  stop:function(){
+    this.gen++;
+    this._clearCur();
+    try{ player.pause(); player.removeAttribute("src"); }catch(e){}
+    if("speechSynthesis" in window) window.speechSynthesis.cancel();
+    this.q = []; this.i = 0; this.paused = false; this.onEnd = null;
+    fballHide();
+    $$(".sec-read.on, .k-read.on").forEach(function(b){ b.classList.remove("on"); });
+  },
+  pause:function(){
+    if(!this.q.length || this.paused) return;
+    this.paused = true;
+    if(this.mode==="audio"){ try{ player.pause(); }catch(e){} }
+    else if("speechSynthesis" in window) window.speechSynthesis.pause();
+    fballUpdate();
+  },
+  resume:function(){
+    if(!this.q.length || !this.paused) return;
+    this.paused = false;
+    if(this.mode==="audio"){ var pr = player.play(); if(pr && pr.catch) pr.catch(function(){}); }
+    else if("speechSynthesis" in window) window.speechSynthesis.resume();
+    fballUpdate();
+  },
+  toggle:function(){ this.paused ? this.resume() : this.pause(); },
+  jump:function(n){
+    if(!this.q.length) return;
+    n = Math.max(0, Math.min(n, this.q.length-1));
+    var my = ++this.gen;
+    try{ player.pause(); }catch(e){}
+    if("speechSynthesis" in window) window.speechSynthesis.cancel();
+    this._clearCur();
+    this.i = n; this.paused = false;
+    this._step(my);
+  },
+  next:function(){ this.jump(this.i + 1); },
+  prev:function(){ this.jump(this.i - 1); },
+  current:function(){ return this.q[this.i] || null; },
+  total:function(){ return this.q.length; }
+};
+
+function playSentence(s){
+  tts.start([{key:s.id, audio:s.audio, slow:s.audioSlow, text:s.yue}], {name:"課文"});
+}
+function playPlain(text, el, name){
+  tts.start([{text:text, el:el, lang:"yue"}], {name:name||"朗讀"});
+}
+
+/* ============ 懸浮朗讀球 ============ */
+function fballShow(){
+  var el = $("#fball"); if(!el) return;
+  el.classList.add("on");
+  document.body.classList.add("fb-on");
+}
+function fballHide(){
+  var el = $("#fball"); if(!el) return;
+  el.classList.remove("on");
+  el.classList.remove("expanded");
+  document.body.classList.remove("fb-on");
+  document.body.classList.remove("fb-paused");
+}
+function fballUpdate(){
+  var el = $("#fball"); if(!el) return;
+  if(!tts.q.length){ fballHide(); return; }
+  fballShow();
+  var it = tts.current() || {};
+  var txt = String(it.text || "").replace(/\s+/g," ").trim();
+  if(txt.length > 46) txt = txt.slice(0,46) + "…";
+  var lab = $("#fb-label"), tx = $("#fb-text"), ic = $("#fb-icon"), rg = $("#fb-ring");
+  if(lab) lab.textContent = tts.name + "　" + (tts.i+1) + " / " + tts.total();
+  if(tx) tx.textContent = txt || "—";
+  if(ic) ic.textContent = tts.paused ? "▶" : "❚❚";
+  document.body.classList.toggle("fb-paused", !!tts.paused);
+  if(rg){
+    var C2 = 2*Math.PI*18;
+    var pct = tts.total() ? (tts.i / tts.total()) : 0;
+    rg.setAttribute("stroke-dasharray", C2.toFixed(1));
+    rg.setAttribute("stroke-dashoffset", (C2*(1-pct)).toFixed(1));
+  }
+}
+
+
+/* ============ 進度 ============ */
+function progOf(id){ return state.prog[id] || {}; }
+function quizScore(id, L){
+  var a = state.quiz[id] || {}, n=0;
+  var total = (L && L.exercises) ? L.exercises.length : 0;
+  Object.keys(a).forEach(function(k){ if(a[k] && a[k].ok) n++; });
+  return {right:n, answered:Object.keys(a).length, total:total};
+}
+function milestones(L){
+  var p = progOf(L.id), q = quizScore(L.id, L);
+  var hasNote = !!(state.notes.lesson[L.id] && state.notes.lesson[L.id].trim()) ||
+                Object.keys(state.notes.sent).some(function(k){ return k.indexOf(L.id)===0 && state.notes.sent[k]; });
+  var secs = L.sections || [];
+  var idxEx = secs.indexOf("exercises");
+  var ms = [{k:"read", label:"讀完課文", done:!!p.read, to:"s1"}];
+  if(L.video) ms.push({k:"watched", label:"看完影片", done:!!p.watched, to:"video"});
+  if(q.total) ms.push({k:"quiz", label:"練習全對", done:q.right===q.total, to:"s"+(idxEx+1)});
+  ms.push({k:"note", label:"寫下筆記", done:hasNote, to:"notes"});
+  return ms;
+}
+function renderRing(){
+  if(!CUR) return "";
+  var ms = milestones(CUR), n = ms.filter(function(m){return m.done;}).length, total = ms.length;
+  var C2 = 2*Math.PI*18, off = C2*(1-n/total);
+  var html = '<div class="ringwrap">'
+    + '<svg viewBox="0 0 44 44" aria-hidden="true">'
+    + '<circle cx="22" cy="22" r="18" fill="none" stroke="var(--line)" stroke-width="3.5"/>'
+    + '<circle cx="22" cy="22" r="18" fill="none" stroke="var(--accent)" stroke-width="3.5"'
+    + ' stroke-linecap="round" stroke-dasharray="'+C2.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'"'
+    + ' transform="rotate(-90 22 22)" style="transition:stroke-dashoffset .4s"/>'
+    + '</svg><b>'+n+'/'+total+'</b></div>'
+    + '<ul class="milestones">'
+    + ms.map(function(m){
+        return '<li class="'+(m.done?"done":"")+'" data-act="jump" data-to="'+m.to+'">'
+          + '<i>'+(m.done?"✓":"")+'</i>'+esc(m.label)+'</li>';
+      }).join("")
+    + '</ul>';
+  return html;
+}
+function refreshRing(){
+  var box = $("#herosize");
+  if(box) box.innerHTML = renderRing();
+}
+
+/* ============ 側欄 ============ */
+function renderNav(){
+  var curNo = CUR ? CUR.no : -1;
+  var html = C.volumes.map(function(v){
+    var items = v.lessons.map(function(l){
+      var on = state.view==="lesson" && l.no===curNo;
+      var cls = "nav-item" + (on?" on":"") + (l.ready?"":" lock");
+      var done = state.prog["L"+pad2(l.no)] && state.prog["L"+pad2(l.no)].done;
+      return '<button class="'+cls+'" '+(l.ready?'data-act="go" data-no="'+l.no+'"':"disabled")+'>'
+        + '<span class="n">'+pad2(l.no)+'</span>'
+        + '<span>'+esc(l.title)+'</span>'+(done?'<span class="dot"></span>':"")+'</button>';
+    }).join("");
+    return '<div class="vol"><div class="vol-h"><b>'+esc(v.name)+'</b><i>'+esc(v.range)+'</i><em>'+esc(v.desc)+'</em></div>'+items+'</div>';
+  }).join("");
+  $("#nav").innerHTML = html;
+  $("#vw-count").textContent = state.words.length;
+}
+
+/* ============ 課程總覽 ============ */
+function renderHome(){
+  state.view = "home";
+  document.title = "粵語自習室 · 課程總覽";
+  $("#crumb").innerHTML = "<b>課程總覽</b>";
+
+  var cards = C.volumes.map(function(v){
+    var ready = v.lessons.filter(function(l){ return l.ready; });
+    var list = ready.length
+      ? ready.map(function(l){
+          return '<button class="mini" data-act="go" data-no="'+l.no+'">'+pad2(l.no)+' '+esc(l.title)+'</button>';
+        }).join("")
+      : '<span style="font-size:12px;color:var(--ink3)">尚未開始</span>';
+    return '<div class="hcard"><b>'+esc(v.name)+'　'+esc(v.range)+'</b>'
+      + '<p>'+esc(v.desc)+'</p>'
+      + '<p style="margin-top:8px;color:var(--jade)">已整理 '+ready.length+' / '+v.lessons.length+' 課</p>'
+      + '<div class="minilist">'+list+'</div></div>';
+  }).join("");
+
+  var readyCount = Object.keys(DATA).length;
+  $("#view").className = "wrap";
+  $("#view").innerHTML = ''
+  + '<section class="hero"><div class="hero-main"><div class="kicker">YUE · SELF STUDY</div>'
+  + '<h1>粵語自習室</h1>'
+  + '<div class="meta"><span>教材：'+esc(C.book)+'</span><span>共 30 課</span>'
+  + '<span>已整理 '+readyCount+' 課</span><span>30 段配套影片</span></div>'
+  + '</div></section>'
+  + '<section class="sec"><div class="sec-h"><span class="sec-num">壹</span><h2>學習路徑</h2></div>'
+  + '<p class="lead">以《粵語（香港話）教程》三十課為骨架，每課五步：先精讀課文，再看配套影片，'
+  + '然後補語音語法與港式文化，最後記筆記、做練習。每課獨立整理，做完一課開放一課。</p>'
+  + '<div class="home-cards">'+cards+'</div></section>'
+  + '<div class="foot">教材：'+esc(C.book)+'　·　粵拼採香港語言學學會方案（Jyutping）'
+  + '　·　音頻由微軟粵語神經音色生成<br>本頁僅供個人學習使用，請勿公開分發教材與影片。</div>';
+
+  renderNav();
+  window.scrollTo(0,0);
+  onScroll();
+}
+
+/* ============ 區塊渲染器 ============ */
+function exRow(yue, jp, cmn, extra){
+  /* 整行可點即讀：目標面積大，不必瞄準右側小按鈕 */
+  return '<div class="ex clickable" data-act="play-text" data-text="'+esc(yue)+'" title="點擊朗讀">'
+    + '<div class="exm"><span class="ey">'+esc(yue)+'</span>'
+    + '<span class="ej">'+esc(jp)+'</span></div>'
+    + '<span class="ec">'+esc(cmn)+(extra?'　<span style="font-size:11px;opacity:.75">'+esc(extra)+'</span>':"")+'</span>'
+    + '</div>';
+}
+
+var SEC = {
+  sentences: {
+    title:"課文",
+    sub:"點句子即可朗讀；「慢」為跟讀用慢速；「✎」寫句級批註。讀到末尾自動解鎖影片。",
+    build:function(L){
+      var sents = L.sentences.map(function(s){
+        var noted = state.notes.sent[s.id];
+        return '<div class="sent" data-key="'+s.id+'" data-sid="'+s.id+'">'
+          + '<div class="sent-top">'
+          +   '<div class="sent-no">'+pad2(s.no)+'</div>'
+          +   '<div class="sent-body">'
+          +     '<div class="sent-jp">'+esc(s.jp)+'</div>'
+          +     '<div class="sent-yue playable" data-act="play" data-sid="'+s.id+'">'+esc(s.yue)+'</div>'
+          +     '<div class="sent-cmn">'+esc(s.cmn)+'</div>'
+          +     (s.tip ? '<div class="sent-tip">'+esc(s.tip)+'</div>' : "")
+          +     '<div class="sent-note'+(noted?" show":"")+'">'
+          +       '<textarea placeholder="這一句的筆記…（自動保存）" data-note="'+s.id+'">'+esc(noted||"")+'</textarea>'
+          +     '</div>'
+          +   '</div>'
+          +   '<div class="sent-act">'
+          +     '<button class="icb" title="播放" aria-label="播放第 '+s.no+' 句" data-act="play" data-sid="'+s.id+'">▶</button>'
+          +     '<button class="icb" title="慢速" aria-label="慢速播放第 '+s.no+' 句" data-act="slow" data-sid="'+s.id+'">慢</button>'
+          +     '<button class="icb'+(noted?" on":"")+'" title="批註" aria-label="批註第 '+s.no+' 句" data-act="toggle-note" data-sid="'+s.id+'">✎</button>'
+          +   '</div>'
+          + '</div></div>';
+      }).join("");
+
+      var bar = '<div class="playbar">'
+        + '<button class="pb-main'+(state.prefs.shadow?" shadow":"")+'" data-act="play-all">'
+        +   (state.prefs.shadow?"▶ 跟讀模式":"▶ 全課朗讀")+'</button>'
+        + '<span class="pb-sep"></span>'
+        + '<button class="pb-btn'+(state.prefs.rate==="normal"?" on":"")+'" data-act="rate" data-rate="normal">常速</button>'
+        + '<button class="pb-btn'+(state.prefs.rate==="slow"?" on":"")+'" data-act="rate" data-rate="slow">慢速</button>'
+        + '<span class="pb-sep"></span>'
+        + '<button class="pb-btn'+(state.prefs.shadow?" on":"")+'" data-act="shadow">跟讀</button>'
+        + '<button class="pb-btn" data-act="mask">'+(state.prefs.mask===""?"遮字：無":state.prefs.mask==="hanzi"?"遮字：藏漢字":"遮字：藏粵拼")+'</button>'
+        + '<span class="pb-sep"></span>'
+        + '<button class="pb-btn" data-act="stop">停止</button>'
+        + '</div>';
+
+      return '<div id="sentlist">'+sents+'</div>' + bar + videoBlock(L);
+    }
+  },
+
+  vocab: {
+    title:"重點詞彙",
+    sub:"星號加入生詞本，▶ 可單獨朗讀。",
+    build:function(L){
+      return '<div class="vgrid">'+L.vocab.map(function(v,i){
+        var fav = state.words.some(function(w){ return w.w===v.w; });
+        return '<div class="vcard" data-act="play-text" data-text="'+esc(v.w)+'" title="點擊朗讀">'
+          + '<button class="star'+(fav?" on":"")+'" data-act="fav" data-i="'+i+'" title="加入生詞本" aria-label="加入生詞本">'+(fav?"★":"☆")+'</button>'
+          + '<div class="vtop"><span class="vw">'+esc(v.w)+'</span><span class="vj">'+esc(v.jp)+'</span></div>'
+          + '<div class="vc">'+esc(v.cmn)+'</div>'
+          + '<div class="vx">'+esc(v.ex)+'</div>'
+          + '</div>';
+      }).join("")+'</div>';
+    }
+  },
+
+  supplement: {
+    title:"補充詞彙",
+    sub:"教材補充部分。點格子即讀。",
+    build:function(L){
+      var S = L.supplement || {};
+      var nums = (S.numbers||[]).map(function(n){
+        return '<div class="numcell" data-act="play-text" data-text="'+esc(n.w)+'"><b>'+esc(n.w)+'</b><i>'+esc(n.jp)+'</i><u>'+esc(n.n)+'</u></div>';
+      }).join("");
+      var groups = (S.groups||[]).map(function(g){
+        var cells = (g.items||[]).map(function(it){
+          return '<div class="numcell" data-act="play-text" data-text="'+esc(it.w)+'"><b>'+esc(it.w)+'</b>'
+            + '<i>'+esc(it.jp)+'</i>'+(it.n?'<u>'+esc(it.n)+'</u>':"")+'</div>';
+        }).join("");
+        return '<div class="supgroup">'+(g.title?'<h4>'+esc(g.title)+'</h4>':"")+'<div class="numrow">'+cells+'</div></div>';
+      }).join("");
+      var rows = (S.sentences||[]).map(function(s){ return exRow(s.yue, s.jp, s.cmn, s.note); }).join("");
+      return (nums ? '<div class="numrow">'+nums+'</div>' : "") + groups + '<div class="exlist">'+rows+'</div>';
+    }
+  },
+
+  understand: {
+    title:"重點理解",
+    sub:"教材用整節篇幅講的易混詞，是這一課真正的乾貨。點例句即讀。",
+    build:function(L){
+      return (L.understand||[]).map(function(u){
+        return '<div class="kcard"><h3>'+esc(u.title)+'</h3><p>'+esc(u.body)+'</p><div class="exlist">'
+          + u.examples.map(function(e){ return exRow(e.yue, e.jp, e.cmn); }).join("")
+          + '</div></div>';
+      }).join("");
+    }
+  },
+
+  phonetics: {
+    title:"語音講解",
+    sub:"這一課的發音重點。",
+    build:function(L){
+      var P = L.phonetics;
+      if(!P) return "";
+      var HD = P.headers || ["調號","調類","調值","例字","粵拼","怎麼聽"];
+      var CLS = P.cols || ["tone-no","","tone-val","tone-ex","tone-val","tone-desc"];
+      var rows = (P.table||[]).map(function(t){
+        return '<tr>' + t.map(function(cell,i){
+          var cls = CLS[i] !== undefined ? CLS[i] : "";
+          return '<td'+(cls?' class="'+cls+'"':"")+'>'+esc(cell)+'</td>';
+        }).join("") + '</tr>';
+      }).join("");
+      var cmp = (P.compare||[]).map(function(c){
+        return '<div class="cmpcell" data-act="play-text" data-text="'+esc(c[1])+'" title="點擊朗讀"><i>'+esc(c[0])+'</i><b>'+esc(c[1])+'</b></div>';
+      }).join("");
+      var notes = (P.notes||[]).map(function(n){ return '<li>'+esc(n)+'</li>'; }).join("");
+      var prac = (P.practice||[]).map(function(p){
+        return '<div class="ex"><div class="exm"><span class="ey">'+esc(p[0])+'</span></div>'
+          + '<span class="ec">'+esc(p[1])+'</span>'
+          + '<button class="eb" data-act="play-text" data-text="'+esc(String(p[0]).split("·")[0].trim())+'" aria-label="朗讀">▶</button></div>';
+      }).join("");
+      return (P.intro ? '<p class="lead">'+esc(P.intro)+'</p>' : "")
+        + (rows ? '<table class="tone"><thead><tr>'+HD.map(function(h){return '<th>'+esc(h)+'</th>';}).join('')+'</tr></thead><tbody>'+rows+'</tbody></table>' : "")
+        + (cmp ? '<div class="cmp">'+cmp+'</div>' : "")
+        + (notes ? '<div class="panel" style="margin-bottom:18px"><h4>記憶要點</h4><ul>'+notes+'</ul></div>' : "")
+        + (prac ? '<div class="panel"><h4>發音練習</h4><ul style="margin-bottom:6px">'+prac+'</ul></div>' : "")
+        + '<p class="note-line">教材原書用的是另一套注音符號（如 din⁶wa²、韻母寫作 êu），本站所有頁面統一改寫為'
+        + '香港語言學學會粵拼（Jyutping）。與原書對照時，同一個字的聲調數字一致，只是拼寫法不同。</p>';
+    }
+  },
+
+  grammar: {
+    title:"語法講解",
+    sub:"這一課的句式重點。",
+    build:function(L){
+      var G = L.grammar;
+      if(!G) return "";
+      var tbl = "";
+      if(G.table && G.table.rows && G.table.rows.length){
+        tbl = '<table class="tone" style="margin-top:12px"><thead><tr>'
+          + (G.table.headers||[]).map(function(h){ return '<th>'+esc(h)+'</th>'; }).join("")
+          + '</tr></thead><tbody>'
+          + G.table.rows.map(function(r){
+              return '<tr>'+r.map(function(cell,i){
+                var cls = i===0 ? "class=\"tone-ex\"" : (i===r.length-1 ? "class=\"tone-desc\"" : "");
+                return '<td '+cls+'>'+esc(cell)+'</td>';
+              }).join("")+'</tr>';
+            }).join("")
+          + '</tbody></table>';
+      }
+      return '<div class="kcard"><h3>'+esc(G.title)+'</h3><p>'+esc(G.body)+'</p>'
+        + tbl
+        + '<div class="exlist">'+G.examples.map(function(e){ return exRow(e.yue, e.jp, e.cmn); }).join("")+'</div>'
+        + (G.warn ? '<p style="margin-top:12px;color:var(--accent);font-size:13px">'+esc(G.warn)+'</p>' : "")
+        + '</div>';
+    }
+  },
+
+  culture: {
+    title:"粵語趣談與港式文化",
+    sub:"課本外的語感，比語法更容易記住。",
+    build:function(L){
+      return (L.culture||[]).map(function(c){
+        return '<div class="kcard"><h3>'+esc(c.title)+'</h3><p>'+esc(c.body)+'</p></div>';
+      }).join("");
+    }
+  },
+
+  extra: {
+    title:"教材之外",
+    sub:"粵普對照、情境延伸、易錯提醒——這些不在教材上，但日常最用得着。",
+    build:function(L){
+      var X = L.extra || {};
+      var tbl = (X.compare||[]).map(function(c){
+        return '<tr><td>'+esc(c.cmn)+'</td><td class="tone-ex">'+esc(c.yue)+'</td>'
+          + '<td class="tone-val">'+esc(c.jp)+'</td><td class="tone-desc">'+esc(c.ex)+'</td></tr>';
+      }).join("");
+      var phrases = (X.phrases||[]).map(function(p){ return exRow(p.yue, p.jp, p.cmn, p.use); }).join("");
+      var pits = (X.pitfalls||[]).map(function(p){
+        return '<div class="kcard"><h3>'+esc(p.title)+'</h3><p>'+esc(p.body)+'</p></div>';
+      }).join("");
+      return (tbl ? '<table class="tone"><thead><tr><th>普通話</th><th>粵語</th><th>粵拼</th><th>例</th></tr></thead><tbody>'+tbl+'</tbody></table>' : "")
+        + (phrases ? '<div class="kcard" style="margin-top:22px"><h3>情境延伸</h3>'
+            + '<p>只靠課文那幾句還不夠應付真實場景，這幾句覆蓋更常見的情形。</p>'
+            + '<div class="exlist">'+phrases+'</div></div>' : "")
+        + pits;
+    }
+  },
+
+  exercises: {
+    title:"練習",
+    sub:"選一個答案，會即時顯示解析；按「重做」可清空重來。",
+    build:function(L){
+      var qs = quizScore(L.id, L);
+      var ans = state.quiz[L.id] || {};
+      var body = (L.exercises||[]).map(function(q,i){
+        var picked = ans[i] ? ans[i].pick : null;
+        var opts = q.options.map(function(o,j){
+          var cls = "opt";
+          if(picked!==null){
+            if(j===q.answer) cls += " right";
+            else if(j===picked) cls += " wrong";
+          }
+          return '<button class="'+cls+'" data-act="opt" data-q="'+i+'" data-j="'+j+'">'+String.fromCharCode(65+j)+'. '+esc(o)+'</button>';
+        }).join("");
+        return '<div class="q" data-qbox="'+i+'"><div class="qh"><span class="qn">'+esc(q.kind)+'</span>'
+          + '<span class="qt">'+esc(q.q)+'</span></div>'
+          + '<div class="opts">'+opts+'</div>'
+          + '<div class="why'+(picked!==null?" show":"")+'" data-why="'+i+'">'+esc(q.why)+'</div></div>';
+      }).join("");
+      return '<div class="quizbar"><span>已答 <b id="q-answered">'+qs.answered+'</b> / '+qs.total+'</span>'
+        + '<span>正確 <b id="q-right">'+qs.right+'</b></span>'
+        + '<button class="qreset" data-act="quiz-reset">重做</button></div>' + body;
+    }
+  },
+
+  chars: {
+    title:"粵字辨認",
+    sub:"本課高頻粵字，寫法和讀音都要記牢。",
+    build:function(L){
+      return (L.chars||[]).map(function(c){
+        var ws = c.words.map(function(w){
+          return '<div class="ex"><div class="exm"><span class="ey">'+esc(w.w)+'</span></div>'
+            + '<span class="ec">'+esc(w.cmn)+'</span>'
+            + '<button class="eb" data-act="play-text" data-text="'+esc(w.w)+'" aria-label="朗讀">▶</button></div>';
+        }).join("");
+        return '<div class="kcard"><h3>'+esc(c.char)+'　<span style="font-family:var(--mono);font-size:12px;color:var(--accent)">'+esc(c.jp)+'</span></h3>'
+          + '<div class="exlist">'+ws+'</div></div>';
+      }).join("");
+    }
+  },
+
+  passage: {
+    title:"短文朗讀",
+    sub:"可整段播放，也可逐句跟讀——每句都有獨立音頻。",
+    build:function(L){
+      var P = L.passage;
+      if(!P) return "";
+      var head = '<div class="passage-head">'
+        + '<b>'+(P.title ? esc(P.title) : "整段連讀")+'</b>'
+        + '<button class="pb-mini" data-act="play-passage">▶ 整段朗讀</button></div>';
+      var lines = P.lines.map(function(ln,i){
+        return '<li class="pline" data-key="'+ln.id+'">'
+          + '<span class="pl-no">'+ln.no+'</span>'
+          + '<div class="pl-body"><div class="sent-jp">'+esc(ln.jp)+'</div>'
+          + '<div class="pl-yue">'+esc(ln.yue)+'</div></div>'
+          + '<button class="icb" data-act="play-line" data-i="'+i+'" aria-label="朗讀第 '+ln.no+' 句">▶</button>'
+          + '</li>';
+      }).join("");
+      return '<div class="passage">'+head+'<ol class="plines">'+lines+'</ol></div>';
+    }
+  },
+
+  dialogue: {
+    title:"會話",
+    sub:"兩三個人真實對話。點氣泡朗讀，角色用顏色區分。",
+    build:function(L){
+      var D = L.dialogue;
+      if(!D) return "";
+      var head = D.scene ? '<p class="dlg-scene">場景：'+esc(D.scene)+'</p>' : "";
+      var body = D.lines.map(function(ln,i){
+        var cls = (ln.spk||"A").toLowerCase();
+        return '<div class="dline '+cls+'" data-key="'+ln.id+'">'
+          + '<span class="dspk">'+esc(ln.name||ln.spk)+'</span>'
+          + '<div class="dbody"><div class="sent-jp">'+esc(ln.jp)+'</div>'
+          + '<div class="dyue playable" data-act="play-dline" data-i="'+i+'">'+esc(ln.yue)+'</div>'
+          + '<div class="sent-cmn">'+esc(ln.cmn)+'</div></div>'
+          + '<button class="icb" data-act="play-dline" data-i="'+i+'" aria-label="朗讀第 '+ln.no+' 輪">▶</button>'
+          + '</div>';
+      }).join("");
+      return head + '<div class="dlgs">'+body+'</div>';
+    }
+  }
+};
+
+function videoBlock(L){
+  if(!L.video) return "";
+  var pr = progOf(L.id);
+  var unlocked = pr.read;
+  var pl = pageList(L);
+  var pagesBtn = pl.length
+    ? '<button class="tool" data-act="pages">對照教材 P'+pad3(pl[0])+'–'+pad3(pl[pl.length-1])+'</button>'
+    : "";
+  return '<div class="videocard" id="video">'
+    + '<div class="video-head"><span class="badge'+(unlocked?'':' lock')+'" id="vbadge">'+(unlocked?'已解鎖':'未解鎖')+'</span>'
+    + '<b>配套影片 · 第 '+L.no+' 課</b><span class="vhint">教材附錄音示範</span>'
+    + (unlocked ? '<div class="ratechips" id="ratechips">'
+        + [0.75,1,1.25].map(function(r){
+            return '<button data-act="vrate" data-r="'+r+'" class="'+(r===1?"on":"")+'">'+r+'×</button>';
+          }).join("") + '</div>' : "")
+    + '</div>'
+    + (unlocked
+        ? '<div class="video-stage"><video id="vid" controls preload="metadata" playsinline src="'+encodeURI(L.video)+'"></video></div>'
+        : '<div class="video-stage"><div class="lockmask"><div class="lk">▣</div>'
+          + '<p>本課影片配合教材錄音。<br>建議先讀完課文，再對照影片校對語調。</p>'
+          + '<p class="hint">讀到課文末尾會自動解鎖</p>'
+          + '<button class="btn-solid" data-act="unlock">我已讀完課文</button></div></div>')
+    + '<div class="video-foot"><p class="vnote">'+esc(L.videoNote||"")+'</p>'
+    + (unlocked
+        ? '<div class="markbar">'
+          + '<button class="mk" data-act="mark-add">＋ 記下此刻</button>'
+          + '<select id="marksid"><option value="">不綁定句子</option>'
+          + L.sentences.map(function(s){ return '<option value="'+s.id+'">第 '+pad2(s.no)+' 句</option>'; }).join("")
+          + '</select>' + pagesBtn
+          + '</div><div class="marklist" id="marklist"></div>'
+        : "")
+    + '</div></div>';
+}
+
+/* ============ 朗讀：區塊收集 ============ */
+var READ_SEL = "h3, p, li, .ey, .pl-yue, .dyue, .sent-yue, .note-line, .dlg-scene, .sent-tip, .lead";
+
+function collectBlocks(root){
+  var out = [];
+  $$(READ_SEL, root).forEach(function(el){
+    if(el.closest(".foot") || el.closest(".playbar") || el.closest(".videocard")) return;
+    if(el.closest(".ex") && el.classList.contains("ec")) return;
+    var txt;
+    if(el.tagName === "H3" && el.firstChild && el.firstChild.nodeType === 3){
+      txt = el.firstChild.textContent;
+    } else {
+      txt = el.textContent;
+    }
+    txt = String(txt||"").replace(/\s+/g, " ").trim();
+    if(txt.length < 2) return;
+    var cn = " "+el.className+" ";
+    var isYue = /\s(ey|pl-yue|dyue|sent-yue)\s/.test(cn);
+    out.push({el:el, text:txt, lang: isYue ? "yue" : (state.prefs.explain||"cmn")});
+  });
+  return out;
+}
+
+function injectReadButtons(){
+  $$(".sec").forEach(function(sec){
+    if(sec.id === "s1" || sec.id === "notes") return;
+    var h = sec.querySelector(".sec-h");
+    if(!h || h.querySelector(".sec-read")) return;
+    h.insertAdjacentHTML("beforeend", '<button class="sec-read" data-act="read-sec">▶ 朗讀本節</button>');
+  });
+  $$(".kcard").forEach(function(card){
+    if(card.querySelector(".k-read")) return;
+    var h = card.querySelector("h3");
+    if(!h) return;
+    h.insertAdjacentHTML("beforeend", '<button class="k-read" data-act="read-card" title="朗讀這一則" aria-label="朗讀這一則">▶</button>');
+  });
+}
+
+/* ============ 右側目錄 ============ */
+/* ============ 語音設定面板 ============ */
+function voiceGroups(){
+  var vs = (tts.voices || []).slice();
+  function isYue(v){
+    var s = (v.lang||"") + " " + (v.name||"");
+    return /yue|cantonese|zh[-_]hk|粵語|粤语/i.test(s);
+  }
+  var yue = vs.filter(isYue);
+  var cmn = vs.filter(function(v){
+    if(isYue(v)) return false;
+    var s = (v.lang||"") + " " + (v.name||"");
+    return /zh[-_](cn|sg|tw|hans|hant)|chinese|中文|國語|普通话|普通話/i.test(s);
+  });
+  function rank(v){ return /natural|online|neural/i.test(v.name||"") ? 0 : 1; }
+  return { yue: yue.sort(function(a,b){ return rank(a)-rank(b); }),
+           cmn: cmn.sort(function(a,b){ return rank(a)-rank(b); }) };
+}
+
+function voiceRow(kind, name, label, lang, checked){
+  return '<div class="vopt'+(checked?" on":"")+'" data-act="voice-pick" data-kind="'+kind+'"'
+    + ' data-name="'+esc(name)+'">'
+    + '<span class="vdot"></span>'
+    + '<span class="vn">'+esc(label)+'</span>'
+    + '<span class="vl">'+esc(lang||"")+'</span></div>';
+}
+
+function renderVoicePanel(){
+  var box = $("#vbody");
+  if(!box) return;
+  var G = voiceGroups();
+  var pY = state.prefs.voiceYue || "auto";
+  var pC = state.prefs.voiceCmn || "auto";
+  var out = "";
+
+  out += '<div class="vgroup"><h4>粵語（講解：粵、粵語例句）</h4>';
+  out += voiceRow("yue","auto","自動（推薦）","",pY==="auto");
+  G.yue.forEach(function(v){
+    out += voiceRow("yue", v.name, v.name, v.lang, pY===v.name);
+  });
+  if(!G.yue.length){
+    out += '<div class="vwarn">這個瀏覽器沒有粵語音色。Edge 內建「Microsoft HiuGaai／HiuMaan（粵語）」效果最好；'
+         + 'Chrome 通常沒有，只能退回中文音色，發音會偏普通話。</div>';
+  } else if(pY!=="auto" && !G.yue.some(function(v){return v.name===pY;})){
+    out += '<div class="vwarn">之前選的音色已不存在（換了瀏覽器或系統更新），已回到「自動」。</div>';
+  }
+  out += '</div>';
+
+  out += '<div class="vgroup"><h4>普通話（講解：普、譯文）</h4>';
+  out += voiceRow("cmn","auto","自動（推薦）","",pC==="auto");
+  G.cmn.forEach(function(v){
+    out += voiceRow("cmn", v.name, v.name, v.lang, pC===v.name);
+  });
+  if(!G.cmn.length){
+    out += '<div class="vwarn">沒有找到中文音色，語音朗讀可能沒有聲音。</div>';
+  }
+  out += '</div>';
+
+  var total = (tts.voices||[]).length;
+  out += '<p class="vsub" style="margin:14px 0 0">偵測到 '+total+' 個語音（粵語 '+G.yue.length
+       + ' 個、普通話 '+G.cmn.length+' 個）。點一下即選用並試聽。</p>';
+  box.innerHTML = out;
+}
+
+function openVoicePanel(){
+  try{
+    var ov = $("#vovl"), pn = $("#vpanel");
+    if(!ov || !pn) return;
+    renderVoicePanel();
+    ov.classList.add("on"); pn.classList.add("on");
+    if(!(tts.voices||[]).length){ tts.ready(function(){ renderVoicePanel(); }); }
+  }catch(err){
+    if(window.console) console.error("[voice panel]", err);
+    toast("語音面板載入失敗");
+  }
+}
+function closeVoicePanel(){
+  var ov = $("#vovl"), pn = $("#vpanel");
+  if(ov) ov.classList.remove("on");
+  if(pn) pn.classList.remove("on");
+}
+
+function previewVoice(kind, name){
+  var G = voiceGroups();
+  var list = kind==="cmn" ? G.cmn : G.yue;
+  var v = (name && name!=="auto") ? list.filter(function(x){return x.name===name;})[0] : null;
+  if(name!=="auto" && !v){ toast("這個音色已不可用"); return; }
+  var text = kind==="cmn"
+    ? "这是用来试音的一句话，听到就说明设置成功。"
+    : "呢句係用嚟試音嘅，你聽到就代表設定成功。";
+  try{ window.speechSynthesis.cancel(); }catch(e){}
+  setTimeout(function(){
+    var u = new SpeechSynthesisUtterance(text);
+    var use = v || tts.pick(kind==="cmn" ? "cmn" : "yue");
+    if(use){ u.voice = use; u.lang = use.lang; }
+    u.rate = 0.95;
+    tts._lastU = u;
+    try{ window.speechSynthesis.speak(u); }catch(e){}
+  }, 60);
+}
+
+/* 板塊標題：課程可用 L.secTitles[k] = "自訂標題" 覆蓋教材通用名 */
+function secTitleOf(L, k){
+  var o = (L && L.secTitles) || {};
+  if(o[k]) return o[k];
+  return (SEC[k] && SEC[k].title) || k;
+}
+function secSubOf(L, k){
+  var o = (L && L.secTitles) || {};
+  if(o[k]) return "";          /* 覆蓋標題時不再顯示原板塊的說明，避免名不對題 */
+  return (SEC[k] && SEC[k].sub) || "";
+}
+
+function buildSideToc(L){
+  var secs = L.sections || [];
+  var items = [{id:"s0", label:"導讀"}];
+  secs.forEach(function(k,i){
+    items.push({id:"s"+(i+1), label:CN(i+1)+" "+secTitleOf(L,k)});
+  });
+  items.push({id:"notes", label:"筆記"});
+  /* 影片卡在課文區塊內，目錄裡就排在「課文」之後，與頁面順序一致 */
+  if(L.video){
+    var at = 1;
+    for(var vi=0; vi<items.length; vi++){ if(items[vi].id === "s1") at = vi + 1; }
+    items.splice(at, 0, {id:"video", label:"影片"});
+  }
+  return '<aside class="toc-side" id="toc-side" aria-label="本課目錄">'
+    + '<div class="ts-h">本課目錄</div>'
+    + items.map(function(it){
+        return '<a class="ts-item" href="#'+it.id+'" data-toc="'+it.id+'">'+esc(it.label)+'</a>';
+      }).join("")
+    + '</aside>';
+}
+
+var spyTick = false;
+function updateSpy(){
+  spyTick = false;
+  var links = $$(".toc-side .ts-item");
+  if(!links.length) return;
+  /* 以目錄條目為準收集節點：影片卡不是 .sec，必須一併納入高亮判定 */
+  var nodes = [];
+  links.forEach(function(a){
+    var id = a.getAttribute("data-toc");
+    var el = document.getElementById(id);
+    if(el) nodes.push({id:id, el:el});
+  });
+  if(!nodes.length) return;
+  nodes.sort(function(p,q){
+    var r = p.el.compareDocumentPosition(q.el);
+    return (r & 4) ? -1 : ((r & 2) ? 1 : 0);
+  });
+  var line = 132, cur = nodes[0].id;
+  for(var i=0;i<nodes.length;i++){
+    if(nodes[i].el.getBoundingClientRect().top - line <= 0) cur = nodes[i].id;
+  }
+  if(window.innerHeight + window.pageYOffset >= document.documentElement.scrollHeight - 60){
+    cur = nodes[nodes.length-1].id;
+  }
+  links.forEach(function(a){ a.classList.toggle("on", a.getAttribute("data-toc")===cur); });
+}
+function initScrollSpy(){ updateSpy(); }
+
+/* ============ 課文視圖 ============ */
+function renderLesson(no){
+  var L = lessonById(no) || lessonById(firstReady());
+  if(!L){
+    state.view = "home";
+    $("#view").innerHTML = '<div class="empty">還沒有任何課件。<br>先跑 _build/make_lesson.py 生成一課。</div>';
+    return;
+  }
+  CUR = L; LID = L.id;
+  state.view = "lesson";
+  state.last = L.no; DB.set("last", L.no);
+  document.title = "粵語自習室 · 第 "+L.no+" 課 "+L.title;
+  $("#crumb").innerHTML = '<b>'+esc(L.volume)+'</b> ／ 第 '+L.no+' 課 '+esc(L.title);
+
+  var pr = progOf(L.id);
+  var tokensTitle = L.titleTokens ? ruby(L.titleTokens) : esc(L.title);
+  var secs = L.sections || [];
+
+  var HTML;
+  try {
+    HTML = '';
+    /* hero */
+    HTML += '<section class="hero"><div class="hero-top">'
+      + '<div class="hero-main"><div class="kicker">'+esc(L.volume)+' · LESSON '+pad2(L.no)+'</div>'
+      + '<h1 class="ruby-line">'+tokensTitle+'</h1>'
+      + '<div class="meta"><span>教材 '+esc(L.pages)+' 頁</span>'
+      + '<span>'+(L.sentences?L.sentences.length:0)+' 句課文</span>'
+      + '<span>'+(L.vocab?L.vocab.length:0)+' 條詞彙</span>'
+      + '<span>練習 '+((L.exercises||[]).length)+' 題</span>'
+      + '<span>'+(L.type==="B"?"閱讀會話課":"精讀課")+'</span></div>'
+      + '</div>'
+      + '<div class="hero-side" id="herosize">'+renderRing()+'</div>'
+      + '</div>'
+      + '<div class="toc">'
+      + secs.map(function(k,i){
+          var chip = '<a href="#s'+(i+1)+'">'+CN(i+1)+' '+esc(secTitleOf(L,k))+'</a>';
+          if(i===0 && L.video) chip += '<a href="#video">影片</a>';
+          return chip;
+        }).join("")
+      + '<button class="special" data-act="pages">教材原頁</button>'
+      + '</div></section>';
+
+    /* 導讀 */
+    HTML += '<div class="lesson-body">';
+    HTML += '<section class="sec" id="s0"><div class="sec-h"><span class="sec-num">導</span><h2>為甚麼先學這一課</h2></div>'
+      + '<p class="lead">'+esc(L.intro)+'</p>'
+      + '<div class="grid2">'
+      + '<div class="panel"><h4>學習目標</h4><ul>'
+      + (L.objectives||[]).map(function(o){return '<li>'+esc(o)+'</li>';}).join('')
+      + '</ul></div>'
+      + '<div class="panel"><h4>先修</h4><ul><li>'+esc(L.prereq||"—")+'</li></ul>'
+      + (L.scene ? '<h4 style="margin-top:16px">場景</h4><p style="font-size:12.5px;color:var(--ink2);line-height:1.8;margin:0">'+esc(L.scene)+'</p>' : "")
+      + '</div></div></section>';
+
+    /* 編號區塊 */
+    secs.forEach(function(k,i){
+      var S = SEC[k];
+      if(!S) return;
+      var anchor = "s" + (i+1);
+      var body = S.build(L);
+      if(!body) return;
+      HTML += '<section class="sec" id="'+anchor+'">'
+        + '<div class="sec-h"><span class="sec-num">'+CN(i+1)+'</span><h2>'+esc(secTitleOf(L,k))+'</h2></div>'
+        + (secSubOf(L,k) ? '<p class="sec-sub">'+esc(secSubOf(L,k))+'</p>' : '')
+        + body + '</section>';
+    });
+
+    /* 筆記 */
+    var noteVal = state.notes.lesson[L.id] || "";
+    var sentNotes = Object.keys(state.notes.sent).filter(function(k){ return k.indexOf(L.id+"-S")===0 && state.notes.sent[k]; });
+    HTML += '<section class="sec" id="notes"><div class="sec-h"><span class="sec-num">記</span><h2>本課筆記</h2></div>'
+      + '<p class="sec-sub">自動保存。已寫 '+sentNotes.length+' 條句級批註。</p>'
+      + '<div class="notebox"><textarea id="lessonnote" placeholder="這一課學到了甚麼？哪些地方還不確定？&#10;建議寫：① 三句要背下來的句子 ② 一個還沒聽清的發音 ③ 下次想問的問題">'+esc(noteVal)+'</textarea>'
+      + '<div class="notebar"><span id="savetip">'+(STORE_OK?"已同步至本機":"以檔案方式開啟，筆記僅存於本次瀏覽")+'</span>'
+      + '<span class="spacer"></span>'
+      + '<button class="tool" data-act="export">匯出筆記</button>'
+      + '<button class="tool" data-act="mark-done">'+(pr.done?"已完成 ✓":"標記本課完成")+'</button></div></div>'
+      + '</section>'
+      + '<div class="foot">教材：'+esc(L.book)+' 第 '+esc(L.pages)+' 頁　·　粵拼採香港語言學學會方案（Jyutping）'
+      + '　·　音頻由微軟粵語神經音色生成<br>本頁僅供個人學習使用，請勿公開分發教材與影片。</div>'
+      + '</div>'
+      + buildSideToc(L);
+  } catch(err){
+    HTML = '<div class="empty">本課渲染出錯：<br><code style="font-family:var(--mono);font-size:12px">'
+         + esc(err && err.message || err) + '</code></div>';
+  }
+
+  $("#view").className = "wrap with-toc";
+  $("#view").innerHTML = HTML;
+
+  injectReadButtons();
+  initScrollSpy();
+  bindLesson();
+  renderNav();
+  renderMarks();
+  applyPrefs();
+  scrollToHash();
+  onScroll();
+}
+
+function scrollToHash(){
+  var h = (location.hash||"").replace(/^#/,"");
+  if(!h || h.indexOf("/")===0) { window.scrollTo(0,0); return; }
+  var el = document.getElementById(h);
+  if(el) setTimeout(function(){ el.scrollIntoView(); }, 60);
+  else window.scrollTo(0,0);
+}
+
+/* ============ 課文區交互 ============ */
+var ioWatcher = null;
+
+function attachVideo(vid){
+  vid.addEventListener("play", function(){ tts.stop(); });
+  vid.addEventListener("ended", watchDone);
+  vid.addEventListener("timeupdate", function(){
+    if(vid.duration && vid.currentTime/vid.duration > 0.8) watchDone();
+  });
+  vid.addEventListener("error", function(){
+    var stage = vid.parentNode;
+    stage.innerHTML = '<div class="vid-err">影片載入失敗。請確認檔案存在且可讀：<br><code>'+esc(CUR.video)+'</code><br>'
+      + '若以 <code>file://</code> 直接開啟，請改用 <code>start-server.bat</code> 啟動本地伺服器。</div>';
+  });
+}
+
+function bindLesson(){
+  var list = $("#sentlist");
+  if(ioWatcher){ try{ ioWatcher.disconnect(); }catch(e){} ioWatcher=null; }
+
+  if(list && !progOf(LID).read){
+    var last = list.lastElementChild;
+    if(last && "IntersectionObserver" in window){
+      ioWatcher = new IntersectionObserver(function(es){
+        es.forEach(function(e){ if(e.isIntersecting) unlock(true); });
+      }, {rootMargin:"0px 0px -25% 0px", threshold:0});
+      ioWatcher.observe(last);
+    }
+  }
+
+  $$(".sent-note textarea").forEach(function(ta){
+    var t;
+    ta.addEventListener("input", function(){
+      clearTimeout(t);
+      t = setTimeout(function(){
+        state.notes.sent[ta.getAttribute("data-note")] = ta.value;
+        DB.set("notes", state.notes);
+        setTip("已保存"); refreshRing();
+      },600);
+    });
+  });
+
+  var ln = $("#lessonnote");
+  if(ln){
+    var t2;
+    ln.addEventListener("input", function(){
+      clearTimeout(t2);
+      t2 = setTimeout(function(){
+        state.notes.lesson[LID] = ln.value;
+        DB.set("notes", state.notes);
+        setTip("已保存"); refreshRing();
+      },600);
+    });
+  }
+
+  var vid = $("#vid");
+  if(vid) attachVideo(vid);
+  onScroll();
+}
+
+function setTip(txt){
+  var s = $("#savetip");
+  if(!s) return;
+  s.textContent = txt;
+  clearTimeout(setTip._t);
+  setTip._t = setTimeout(function(){ s.textContent = STORE_OK?"已同步至本機":"僅存於本次瀏覽"; }, 1600);
+}
+
+/* ============ 影片 ============ */
+function watchDone(){
+  if(progOf(LID).watched) return;
+  state.prog[LID] = Object.assign({}, state.prog[LID], {watched:true});
+  DB.set("prog", state.prog);
+  refreshRing();
+  toast("已記錄看片進度");
+}
+function renderMarks(){
+  var box = $("#marklist");
+  if(!box) return;
+  var list = state.marks.filter(function(m){ return m.lesson===LID; }).sort(function(a,b){ return a.t-b.t; });
+  if(!list.length){
+    box.innerHTML = '<div class="mh" style="font-size:11.5px;color:var(--ink3);padding:2px 0">還沒有時間碼。看到精彩處按「記下此刻」。</div>';
+    return;
+  }
+  box.innerHTML = list.map(function(m){
+    var idx = state.marks.indexOf(m);
+    var s = (CUR.sentences||[]).filter(function(x){ return x.id===m.sid; })[0];
+    return '<div class="markrow">'
+      + '<button class="mt" data-act="seek" data-t="'+m.t+'">'+fmtTime(m.t)+'</button>'
+      + (s ? '<span class="ms">第 '+pad2(s.no)+' 句</span>' : "")
+      + '<input value="'+esc(m.text||"")+'" placeholder="這一段在講甚麼…" data-mark="'+idx+'">'
+      + '<button class="mx" data-act="del-mark" data-i="'+idx+'" aria-label="刪除">×</button>'
+      + '</div>';
+  }).join("");
+}
+function addMark(){
+  var v = $("#vid");
+  if(!v){ toast("先解鎖影片"); return; }
+  var sel = $("#marksid");
+  state.marks.push({lesson:LID, t:Math.round((v.currentTime||0)*10)/10, sid:sel?sel.value:"", text:"", at:Date.now()});
+  DB.set("marks", state.marks);
+  renderMarks();
+  var box = $("#marklist");
+  var last = box ? box.querySelector(".markrow:last-child input") : null;
+  if(last) last.focus();
+  toast("已記下 "+fmtTime(v.currentTime));
+}
+function seekTo(t){
+  var v = $("#vid");
+  if(!v){ toast("先解鎖影片"); return; }
+  v.currentTime = t;
+  var p = v.play(); if(p && p.catch) p.catch(function(){});
+  v.scrollIntoView({behavior:"smooth", block:"center"});
+}
+
+/* ============ 解鎖 ============ */
+function unlock(silent){
+  if(progOf(LID).read) return;
+  state.prog[LID] = Object.assign({}, state.prog[LID], {read:true});
+  DB.set("prog", state.prog);
+
+  var card = $("#video");
+  if(card && CUR.video){
+    var badge = $("#vbadge");
+    if(badge){ badge.textContent="已解鎖"; badge.classList.remove("lock"); }
+    var stage = card.querySelector(".video-stage");
+    if(stage){
+      stage.outerHTML = '<div class="video-stage"><video id="vid" controls preload="metadata" playsinline src="'+encodeURI(CUR.video)+'"></video></div>';
+      var vid = $("#vid"); if(vid) attachVideo(vid);
+    }
+    var head = card.querySelector(".video-head");
+    if(head && !$("#ratechips")){
+      var chips = document.createElement("div");
+      chips.className = "ratechips"; chips.id = "ratechips";
+      chips.innerHTML = [0.75,1,1.25].map(function(r){
+        return '<button data-act="vrate" data-r="'+r+'" class="'+(r===1?"on":"")+'">'+r+'×</button>';
+      }).join("");
+      head.appendChild(chips);
+    }
+    var foot = card.querySelector(".video-foot");
+    if(foot && !foot.querySelector(".markbar")){
+      var pl = pageList(CUR);
+      foot.insertAdjacentHTML("beforeend",
+        '<div class="markbar"><button class="mk" data-act="mark-add">＋ 記下此刻</button>'
+        + '<select id="marksid"><option value="">不綁定句子</option>'
+        + (CUR.sentences||[]).map(function(s){ return '<option value="'+s.id+'">第 '+pad2(s.no)+' 句</option>'; }).join("")
+        + '</select>'
+        + (pl.length ? '<button class="tool" data-act="pages">對照教材 P'+pad3(pl[0])+'–'+pad3(pl[pl.length-1])+'</button>' : "")
+        + '</div><div class="marklist" id="marklist"></div>');
+      renderMarks();
+    }
+  }
+  refreshRing();
+  toast(silent ? "讀完課文，影片已解鎖" : "已解鎖本課影片");
+}
+
+/* ============ 教材原頁 ============ */
+var lbIdx = 0, lbPages = [];
+function openPages(){
+  lbPages = pageList(CUR);
+  if(!lbPages.length){ toast("本課沒有教材頁圖"); return; }
+  lbIdx = 0;
+  showPage();
+  $("#lightbox").classList.add("on");
+  document.body.style.overflow = "hidden";
+}
+function showPage(){
+  $("#lb-img").src = "pages/"+LID+"-"+pad3(lbPages[lbIdx])+".png";
+  $("#lb-label").textContent = "教材 第 "+pad3(lbPages[lbIdx])+" 頁　·　"+(lbIdx+1)+" / "+lbPages.length;
+}
+function lbGo(d){
+  if(!lbPages.length) return;
+  lbIdx = (lbIdx + d + lbPages.length) % lbPages.length;
+  showPage();
+}
+function closePages(){
+  $("#lightbox").classList.remove("on");
+  document.body.style.overflow = "";
+}
+
+/* ============ 抽屜 ============ */
+function openDrawer(kind){
+  var body = $("#drawer-body");
+  if(kind==="vocab"){
+    $("#drawer-title").textContent = "生詞本";
+    if(!state.words.length){
+      body.innerHTML = '<div class="empty">還沒有收藏生詞。<br>在詞彙卡片上按 ☆ 即可加入。</div>';
+    }else{
+      body.innerHTML = state.words.map(function(w,i){
+        return '<div class="witem"><div style="min-width:0"><b>'+esc(w.w)+'</b>'
+          + '<div style="font-size:11px;color:var(--accent);font-family:var(--mono)">'+esc(w.jp)+'</div>'
+          + '<p>'+esc(w.cmn)+(w.ex?'　·　'+esc(w.ex):'')+'</p></div>'
+          + '<button data-act="play-text" data-text="'+esc(w.w)+'" aria-label="朗讀" style="margin-left:auto">▶</button>'
+          + '<button data-act="del-word" data-i="'+i+'" aria-label="刪除">×</button></div>';
+      }).join("") + '<div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">'
+        + '<button class="tool" data-act="export-words">匯出生詞（JSON）</button>'
+        + '<button class="tool" data-act="export-anki">匯出 Anki 卡片</button></div>';
+    }
+  }else{
+    $("#drawer-title").textContent = "我的筆記";
+    var out = [];
+    Object.keys(state.notes.lesson).forEach(function(k){
+      if(!state.notes.lesson[k]) return;
+      var L2 = DATA[k];
+      var t = L2 ? ("第 "+L2.no+" 課 "+L2.title+" · 課級筆記") : (k+" · 課級筆記");
+      out.push('<div class="witem"><div><b style="font-size:14px">'+esc(t)+'</b>'
+        + '<p style="white-space:pre-wrap;color:var(--ink2);font-size:13px">'+esc(state.notes.lesson[k])+'</p></div></div>');
+    });
+    Object.keys(state.notes.sent).forEach(function(k){
+      if(!state.notes.sent[k]) return;
+      var lid = k.slice(0,3), L2 = DATA[lid];
+      var s = L2 ? (L2.sentences||[]).filter(function(x){ return x.id===k; })[0] : null;
+      var label = s ? ("第 "+pad2(s.no)+" 句　"+s.yue) : k;
+      out.push('<div class="witem"><div style="min-width:0"><b style="font-size:13px;font-family:var(--sans)">'+esc(label)+'</b>'
+        + '<p style="white-space:pre-wrap;color:var(--ink2);font-size:13px">'+esc(state.notes.sent[k])+'</p></div></div>');
+    });
+    body.innerHTML = out.length
+      ? out.join("") + '<div style="margin-top:16px"><button class="tool" data-act="export">匯出全部筆記</button></div>'
+      : '<div class="empty">還沒有筆記。<br>在課文句子右側按 ✎ 開始。</div>';
+  }
+  $("#drawer").classList.add("on");
+  $("#scrim").classList.add("on");
+}
+function closeDrawer(){
+  $("#drawer").classList.remove("on");
+  $("#scrim").classList.remove("on");
+  var sb = $("#sidebar"); if(sb) sb.classList.remove("open");
+}
+
+/* ============ 匯出 ============ */
+function download(name, text, type){
+  var blob = new Blob([text], {type:type||"text/plain;charset=utf-8"});
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },1000);
+}
+function exportNotes(){
+  var md = "# 粵語自習筆記\n\n> 教材：《粵語（香港話）教程（修訂版）》\n\n";
+  Object.keys(state.notes.lesson).forEach(function(k){
+    if(!state.notes.lesson[k]) return;
+    var L2 = DATA[k];
+    md += "## "+(L2?("第 "+L2.no+" 課 "+L2.title):k)+"　課級筆記\n\n"+state.notes.lesson[k]+"\n\n";
+    Object.keys(state.notes.sent).forEach(function(s){
+      if(s.indexOf(k)!==0 || !state.notes.sent[s]) return;
+      var sent = L2 ? (L2.sentences||[]).filter(function(x){ return x.id===s; })[0] : null;
+      md += "### "+(sent?("第 "+pad2(sent.no)+" 句　"+sent.yue):s)+"\n\n";
+      md += "`"+(sent?sent.jp:"")+"`\n\n"+state.notes.sent[s]+"\n\n";
+    });
+  });
+  var marks = state.marks.filter(function(m){ return m.lesson===LID; });
+  if(marks.length){
+    md += "## 影片時間碼（第 "+CUR.no+" 課）\n\n";
+    marks.sort(function(a,b){ return a.t-b.t; }).forEach(function(m){
+      md += "- "+fmtTime(m.t)+"　"+(m.text||"")+(m.sid?("　["+m.sid+"]"):"")+"\n";
+    });
+  }
+  download("yue-notes-"+new Date().toISOString().slice(0,10)+".md", md, "text/markdown;charset=utf-8");
+  toast("筆記已匯出");
+}
+
+/* ============ 偏好 ============ */
+function applyPrefs(){
+  document.documentElement.setAttribute("data-theme", state.prefs.theme||"light");
+  document.documentElement.setAttribute("data-hide-jp", state.prefs.jp?"0":"1");
+  document.documentElement.setAttribute("data-hide-cmn", state.prefs.cmn?"0":"1");
+  document.documentElement.setAttribute("data-mask", state.prefs.mask||"");
+  $$("[data-act='t-jp']").forEach(function(b){ b.classList.toggle("active", !!state.prefs.jp); });
+  $$("[data-act='t-cmn']").forEach(function(b){ b.classList.toggle("active", !!state.prefs.cmn); });
+  var eb = $("[data-act='explain-lang']");
+  if(eb) eb.textContent = "講解：" + (state.prefs.explain==="yue" ? "粵" : "普");
+}
+
+/* ============ 路由 ============ */
+function parseRoute(){
+  var h = (location.hash||"").replace(/^#\/?/,"");
+  var m = h.match(/^lesson\/(\d+)/);
+  if(m) return {view:"lesson", no:+m[1]};
+  if(h==="home") return {view:"home"};
+  return null;
+}
+function goLesson(no){
+  location.hash = "#/lesson/"+no;
+  if(parseRoute()===null) renderLesson(no);
+}
+function onRoute(){
+  var r = parseRoute();
+  if(!r) return;
+  if(r.view==="home"){ renderHome(); }
+  else if(!CUR || CUR.no!==r.no){ renderLesson(r.no); }
+  else { window.scrollTo(0,0); }
+}
+
+/* ============ 事件 ============ */
+document.addEventListener("click", function(e){
+  var a = e.target.closest('a[href^="#"]');
+  if(a && !a.hasAttribute("data-act")){
+    e.preventDefault();
+    var id = a.getAttribute("href").slice(1);
+    var el = document.getElementById(id);
+    if(el) el.scrollIntoView({behavior:"smooth", block:"start"});
+    return;
+  }
+  var t = e.target.closest("[data-act]");
+  if(!t) return;
+  var act = t.getAttribute("data-act");
+
+  if(act==="home"){ closeDrawer(); location.hash = "#/home"; renderHome(); }
+  else if(act==="go"){
+    var no = +t.getAttribute("data-no");
+    var L2 = lessonById(no);
+    if(!L2){ toast("該課尚未整理"); return; }
+    closeDrawer();
+    var same = CUR && CUR.no===no;
+    location.hash = "#/lesson/"+no;
+    if(same) renderLesson(no);
+  }
+  else if(act==="menu"){
+    var sb = $("#sidebar");
+    sb.classList.toggle("open");
+    $("#scrim").classList.toggle("on", sb.classList.contains("open"));
+  }
+  else if(act==="theme"){
+    var d = document.documentElement.getAttribute("data-theme")==="dark";
+    state.prefs.theme = d?"light":"dark"; DB.set("prefs", state.prefs); applyPrefs();
+  }
+  else if(act==="t-jp"){ state.prefs.jp = !state.prefs.jp; DB.set("prefs", state.prefs); applyPrefs(); }
+  else if(act==="t-cmn"){ state.prefs.cmn = !state.prefs.cmn; DB.set("prefs", state.prefs); applyPrefs(); }
+  else if(act==="rate"){
+    state.prefs.rate = t.getAttribute("data-rate"); DB.set("prefs", state.prefs);
+    $$("[data-act='rate']").forEach(function(b){ b.classList.toggle("on", b.getAttribute("data-rate")===state.prefs.rate); });
+    toast(state.prefs.rate==="slow" ? "慢速：跟讀用" : "常速");
+  }
+  else if(act==="shadow"){
+    state.prefs.shadow = !state.prefs.shadow; DB.set("prefs", state.prefs);
+    t.classList.toggle("on", state.prefs.shadow);
+    var pm = $(".pb-main");
+    if(pm){ pm.classList.toggle("shadow", state.prefs.shadow); pm.textContent = state.prefs.shadow?"▶ 跟讀模式":"▶ 全課朗讀"; }
+    toast(state.prefs.shadow ? "跟讀：每句後留白 2 秒" : "已關閉跟讀");
+  }
+  else if(act==="mask"){
+    var m = state.prefs.mask||"";
+    state.prefs.mask = m==="" ? "hanzi" : (m==="hanzi" ? "jp" : "");
+    DB.set("prefs", state.prefs); applyPrefs();
+    t.textContent = state.prefs.mask===""?"遮字：無":state.prefs.mask==="hanzi"?"遮字：藏漢字":"遮字：藏粵拼";
+    toast(state.prefs.mask===""?"已顯示全文":state.prefs.mask==="hanzi"?"只留粵拼，看拼讀字":"只留漢字，考粵拼");
+  }
+  else if(act==="play" || act==="slow"){
+    var sid = t.getAttribute("data-sid");
+    var s = (CUR.sentences||[]).filter(function(x){ return x.id===sid; })[0];
+    if(!s) return;
+    if(act==="slow"){
+      state.prefs.rate="slow";
+      $$("[data-act='rate']").forEach(function(b){ b.classList.toggle("on", b.getAttribute("data-rate")==="slow"); });
+    }
+    playSentence(s);
+  }
+  else if(act==="play-all"){
+    tts.start((CUR.sentences||[]).map(function(s){
+      return {key:s.id, audio:s.audio, slow:s.audioSlow, text:s.yue};
+    }), {
+      gap: state.prefs.shadow ? 2000 : 240,
+      name: state.prefs.shadow ? "跟讀模式" : "全課朗讀"
+    });
+  }
+  else if(act==="play-text"){
+    var be = t.closest(".vcard") || t.closest(".ex") || t.closest(".numcell") || null;
+    playPlain(t.getAttribute("data-text"), be, "例句");
+  }
+  else if(act==="play-passage"){
+    tts.start([{audio:CUR.passage.audio, text:CUR.passage.text}], {name:"整段朗讀"});
+  }
+  else if(act==="play-line"){
+    var ln = CUR.passage.lines[+t.getAttribute("data-i")];
+    if(ln) tts.start([{key:ln.id, audio:ln.audio, slow:ln.audioSlow, text:ln.yue}], {name:"短文"});
+  }
+  else if(act==="play-dline"){
+    var dl = CUR.dialogue.lines[+t.getAttribute("data-i")];
+    if(dl) tts.start([{key:dl.id, audio:dl.audio, slow:dl.audioSlow, text:dl.yue}], {name:"會話"});
+  }
+  else if(act==="stop"){
+    tts.stop();
+    $$(".sec-read.on, .k-read.on").forEach(function(b){ b.classList.remove("on"); });
+  }
+  else if(act==="read-sec"){
+    var sec = t.closest(".sec");
+    var blocks = collectBlocks(sec);
+    if(!blocks.length){ toast("本節沒有可朗讀文字"); return; }
+    $$(".sec-read.on, .k-read.on").forEach(function(b){ b.classList.remove("on"); });
+    t.classList.add("on");
+    toast("朗讀本節 · "+(state.prefs.explain==="yue"?"粵語":"普通話")+"講解");
+    tts.start(blocks.map(function(b){ return {text:b.text, el:b.el, cls:"reading", lang:b.lang}; }),
+              {gap:180, name:"朗讀本節", onEnd:function(){ t.classList.remove("on"); }});
+  }
+  else if(act==="read-card"){
+    var card = t.closest(".kcard");
+    var blocks2 = collectBlocks(card);
+    if(!blocks2.length) return;
+    $$(".sec-read.on, .k-read.on").forEach(function(b){ b.classList.remove("on"); });
+    t.classList.add("on");
+    tts.start(blocks2.map(function(b){ return {text:b.text, el:b.el, cls:"reading", lang:b.lang}; }),
+              {gap:180, name:"朗讀這一則", onEnd:function(){ t.classList.remove("on"); }});
+  }
+  else if(act==="voice-panel"){
+    openVoicePanel();
+  }
+  else if(act==="voice-close"){
+    closeVoicePanel();
+  }
+  else if(act==="voice-pick"){
+    var kind = t.getAttribute("data-kind") || "yue";
+    var vname = t.getAttribute("data-name") || "auto";
+    if(kind==="cmn") state.prefs.voiceCmn = vname;
+    else state.prefs.voiceYue = vname;
+    DB.set("prefs", state.prefs);
+    renderVoicePanel();
+    previewVoice(kind, vname);
+    toast(vname==="auto" ? "已改用自動挑選" : "已選用：" + vname);
+  }
+  else if(act==="explain-lang"){
+    state.prefs.explain = state.prefs.explain==="yue" ? "cmn" : "yue";
+    DB.set("prefs", state.prefs); applyPrefs();
+    toast(state.prefs.explain==="yue" ? "講解改用粵語朗讀（練聽力）" : "講解用普通話朗讀（聽得清）");
+  }
+  else if(act==="toggle-note"){
+    var box = t.closest(".sent").querySelector(".sent-note");
+    box.classList.toggle("show");
+    t.classList.toggle("on", box.classList.contains("show"));
+    if(box.classList.contains("show")) box.querySelector("textarea").focus();
+  }
+  else if(act==="fav"){
+    var i = +t.getAttribute("data-i"), v = CUR.vocab[i];
+    var idx = -1;
+    state.words.forEach(function(w,k){ if(w.w===v.w) idx=k; });
+    if(idx>=0){ state.words.splice(idx,1); t.classList.remove("on"); t.textContent="☆"; toast("已移出生詞本"); }
+    else{ state.words.push({w:v.w, jp:v.jp, cmn:v.cmn, ex:v.ex, at:Date.now()}); t.classList.add("on"); t.textContent="★"; toast("已加入生詞本"); }
+    DB.set("words", state.words);
+    $("#vw-count").textContent = state.words.length;
+  }
+  else if(act==="unlock"){ unlock(false); }
+  else if(act==="opt"){
+    var qi = +t.getAttribute("data-q"), j = +t.getAttribute("data-j"), q = CUR.exercises[qi];
+    var box2 = t.closest(".q");
+    state.quiz[LID] = state.quiz[LID] || {};
+    state.quiz[LID][qi] = {pick:j, ok: j===q.answer};
+    DB.set("quiz", state.quiz);
+    $$(".opt", box2).forEach(function(o,k){
+      o.classList.remove("right","wrong");
+      if(k===q.answer) o.classList.add("right");
+      if(k===j && j!==q.answer) o.classList.add("wrong");
+    });
+    $(".why", box2).classList.add("show");
+    var qs = quizScore(LID, CUR);
+    var qa = $("#q-answered"), qr = $("#q-right");
+    if(qa) qa.textContent = qs.answered;
+    if(qr) qr.textContent = qs.right;
+    refreshRing();
+  }
+  else if(act==="quiz-reset"){
+    state.quiz[LID] = {}; DB.set("quiz", state.quiz);
+    renderLesson(CUR.no);
+    var s9 = $("#s9"); if(s9) s9.scrollIntoView();
+    toast("練習已清空");
+  }
+  else if(act==="open-vocab"){ openDrawer("vocab"); }
+  else if(act==="open-notes"){ openDrawer("notes"); }
+  else if(act==="close-drawer"){ closeDrawer(); }
+  else if(act==="close-all"){ closeDrawer(); }
+  else if(act==="del-word"){
+    state.words.splice(+t.getAttribute("data-i"),1); DB.set("words", state.words);
+    openDrawer("vocab"); $("#vw-count").textContent = state.words.length;
+  }
+  else if(act==="export"){ exportNotes(); }
+  else if(act==="export-words"){
+    download("yue-words-"+new Date().toISOString().slice(0,10)+".json", JSON.stringify(state.words,null,2), "application/json");
+    toast("生詞已匯出");
+  }
+  else if(act==="export-anki"){
+    if(!state.words.length){ toast("生詞本是空的"); return; }
+    var tsv = state.words.map(function(w){ return [w.w, w.jp, w.cmn, w.ex||""].join("\t"); }).join("\n");
+    download("yue-anki-"+new Date().toISOString().slice(0,10)+".txt", tsv, "text/tab-separated-values;charset=utf-8");
+    toast("已匯出 "+state.words.length+" 張 Anki 卡片");
+  }
+  else if(act==="mark-done"){
+    state.prog[LID] = Object.assign({}, state.prog[LID], {read:true, done:true});
+    DB.set("prog", state.prog);
+    t.textContent = "已完成 ✓";
+    refreshRing(); renderNav(); toast("本課已完成");
+  }
+  else if(act==="vrate"){
+    var r = parseFloat(t.getAttribute("data-r"));
+    var vid2 = $("#vid");
+    if(vid2) vid2.playbackRate = r;
+    $$("#ratechips button").forEach(function(b){ b.classList.toggle("on", b===t); });
+    toast("播放速度 "+r+"×");
+  }
+  else if(act==="mark-add"){ addMark(); }
+  else if(act==="seek"){ seekTo(parseFloat(t.getAttribute("data-t"))); }
+  else if(act==="del-mark"){
+    state.marks.splice(+t.getAttribute("data-i"),1);
+    DB.set("marks", state.marks); renderMarks();
+  }
+  else if(act==="pages"){ openPages(); }
+  else if(act==="lb-close"){ closePages(); }
+  else if(act==="lb-prev"){ lbGo(-1); }
+  else if(act==="lb-next"){ lbGo(1); }
+  else if(act==="jump"){
+    var el = document.getElementById(t.getAttribute("data-to"));
+    if(el) el.scrollIntoView({behavior:"smooth", block:"start"});
+  }
+  else if(act==="fb-expand"){ $("#fball").classList.toggle("expanded"); }
+  else if(act==="fb-play"){ tts.toggle(); }
+  else if(act==="fb-prev"){ tts.prev(); }
+  else if(act==="fb-next"){ tts.next(); }
+  else if(act==="fb-stop"){ tts.stop(); }
+  else if(act==="fb-locate"){
+    var cel = tts.curEl;
+    if(cel) cel.scrollIntoView({behavior:"smooth", block:"center"});
+    else toast("目前沒有正在朗讀的段落");
+  }
+  else if(act==="keys"){ toast("空格 全課朗讀 · ← → 影片快退快進 · Esc 關閉"); }
+});
+
+document.addEventListener("input", function(e){
+  var inp = e.target;
+  if(inp && inp.hasAttribute("data-mark")){
+    var idx = +inp.getAttribute("data-mark");
+    if(state.marks[idx]){ state.marks[idx].text = inp.value; DB.set("marks", state.marks); }
+  }
+});
+
+document.addEventListener("keydown", function(e){
+  if(e.key==="Escape"){ closePages(); closeDrawer(); return; }
+  if($("#lightbox").classList.contains("on")){
+    if(e.key==="ArrowLeft"){ lbGo(-1); e.preventDefault(); return; }
+    if(e.key==="ArrowRight"){ lbGo(1); e.preventDefault(); return; }
+  }
+  var tag = (e.target.tagName||"").toUpperCase();
+  if(tag==="TEXTAREA" || tag==="INPUT" || tag==="SELECT") return;
+  if(e.key===" " && tag!=="BUTTON" && tag!=="A" && state.view==="lesson"){
+    e.preventDefault();
+    var b = $("[data-act='play-all']");
+    if(b) b.click();
+  }
+  if(tag==="BODY" || tag==="HTML"){
+    var v = $("#vid");
+    if(v && !v.paused){
+      if(e.key==="ArrowLeft"){ v.currentTime = Math.max(0, v.currentTime-3); e.preventDefault(); }
+      if(e.key==="ArrowRight"){ v.currentTime = Math.min(v.duration||0, v.currentTime+3); e.preventDefault(); }
+    }
+  }
+});
+
+function onScroll(){
+  var h = document.documentElement;
+  var max = h.scrollHeight - h.clientHeight;
+  var p = max>0 ? (h.scrollTop||document.body.scrollTop)/max : 0;
+  var bar = $("#pl"); if(bar) bar.style.width = (p*100).toFixed(1)+"%";
+}
+window.addEventListener("scroll", onScroll, {passive:true});
+window.addEventListener("scroll", function(){
+  if(!spyTick){ spyTick = true; requestAnimationFrame(updateSpy); }
+}, {passive:true});
+window.addEventListener("hashchange", onRoute);
+
+/* ============ 啟動 ============ */
+window.addEventListener("error", function(ev){
+  try{ toast("腳本錯誤：" + (ev.message||"unknown")); }catch(e){}
+});
+applyPrefs();
+tts.load();
+var r0 = parseRoute();
+if(r0 && r0.view==="home") renderHome();
+else renderLesson(r0 && r0.no ? r0.no
+                   : (state.last && lessonById(state.last) ? state.last
+                     : (DATA.L03 ? 3 : firstReady())));
+setTimeout(onScroll, 120);
+
+})();
+
+</script>
+</body>
+</html>
