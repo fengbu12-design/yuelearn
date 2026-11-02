@@ -721,8 +721,8 @@ html[data-theme="dark"] .reading{background:#33211A;box-shadow:0 0 0 4px #33211A
 
 <div class="toast" id="toast"></div>
 
-<script src="data/course.js?v=43"></script>
-<script src="data/lessons.js?v=43"></script>
+<script src="data/course.js?v=45"></script>
+<script src="data/lessons.js?v=45"></script>
 <script>
 (function(){
 "use strict";
@@ -1155,12 +1155,15 @@ function renderHome(){
   }).join("");
 
   var readyCount = Object.keys(DATA).length;
+  var totalLessons = C.volumes.reduce(function(n,v){ return n + v.lessons.length; }, 0);
+  var totalVideos = C.volumes.reduce(function(n,v){
+    return n + v.lessons.filter(function(l){ return !!l.video; }).length; }, 0);
   $("#view").className = "wrap";
   $("#view").innerHTML = ''
   + '<section class="hero"><div class="hero-main"><div class="kicker">YUE · SELF STUDY</div>'
   + '<h1>粵語自習室</h1>'
-  + '<div class="meta"><span>教材：'+esc(C.book)+'</span><span>共 30 課</span>'
-  + '<span>已整理 '+readyCount+' 課</span><span>30 段配套影片</span></div>'
+  + '<div class="meta"><span>教材：'+esc(C.book)+'</span><span>共 '+totalLessons+' 課</span>'
+  + '<span>已整理 '+readyCount+' 課</span><span>'+totalVideos+' 段配套影片</span></div>'
   + '</div></section>'
   + '<section class="sec"><div class="sec-h"><span class="sec-num">壹</span><h2>學習路徑</h2></div>'
   + '<p class="lead">以《粵語（香港話）教程》三十課為骨架，每課五步：先精讀課文，再看配套影片，'
@@ -2374,7 +2377,6 @@ else renderLesson(r0 && r0.no ? r0.no
 setTimeout(onScroll, 120);
 
 })();
-
 </script>
 </body>
 </html>
