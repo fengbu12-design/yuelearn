@@ -330,6 +330,8 @@ html[data-hide-cmn="1"] .ex .ec{display:none}
 .ex.clickable{cursor:pointer;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);transition:border-color .15s,background .15s}
 .ex.clickable:hover{border-color:var(--line2);background:var(--accent-soft)}
 .ex.clickable.playing{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+td.clickable{cursor:pointer}
+td.clickable:hover{background:var(--accent-soft);color:var(--accent)}
 
 /* tone table */
 table.tone{width:100%;border-collapse:collapse;font-size:13px;margin:6px 0 14px}
@@ -721,8 +723,8 @@ html[data-theme="dark"] .reading{background:#33211A;box-shadow:0 0 0 4px #33211A
 
 <div class="toast" id="toast"></div>
 
-<script src="data/course.js?v=45"></script>
-<script src="data/lessons.js?v=45"></script>
+<script src="data/course.js?v=47"></script>
+<script src="data/lessons.js?v=47"></script>
 <script>
 (function(){
 "use strict";
@@ -1035,8 +1037,8 @@ var tts = {
 function playSentence(s){
   tts.start([{key:s.id, audio:s.audio, slow:s.audioSlow, text:s.yue}], {name:"課文"});
 }
-function playPlain(text, el, name){
-  tts.start([{text:text, el:el, lang:"yue"}], {name:name||"朗讀"});
+function playPlain(text, el, name, audio){
+  tts.start([{text:text, el:el, lang:"yue", audio:audio||null}], {name:name||"朗讀"});
 }
 
 /* ============ 懸浮朗讀球 ============ */
@@ -1178,14 +1180,18 @@ function renderHome(){
 }
 
 /* ============ 區塊渲染器 ============ */
-function exRow(yue, jp, cmn, extra){
+function exRow(yue, jp, cmn, extra, audio){
   /* 整行可點即讀：目標面積大，不必瞄準右側小按鈕 */
-  return '<div class="ex clickable" data-act="play-text" data-text="'+esc(yue)+'" title="點擊朗讀">'
+  return '<div class="ex clickable" data-act="play-text" data-text="'+esc(yue)+'"'
+    + (audio ? ' data-audio="'+esc(audio)+'"' : "")
+    + ' title="點擊朗讀">'
     + '<div class="exm"><span class="ey">'+esc(yue)+'</span>'
     + '<span class="ej">'+esc(jp)+'</span></div>'
     + '<span class="ec">'+esc(cmn)+(extra?'　<span style="font-size:11px;opacity:.75">'+esc(extra)+'</span>':"")+'</span>'
     + '</div>';
 }
+
+function aud(a){ return a ? ' data-audio="'+esc(a)+'"' : ""; }
 
 var SEC = {
   sentences: {
@@ -1237,7 +1243,7 @@ var SEC = {
     build:function(L){
       return '<div class="vgrid">'+L.vocab.map(function(v,i){
         var fav = state.words.some(function(w){ return w.w===v.w; });
-        return '<div class="vcard" data-act="play-text" data-text="'+esc(v.w)+'" title="點擊朗讀">'
+        return '<div class="vcard" data-act="play-text" data-text="'+esc(v.w)+'"'+aud(v.audio)+' title="點擊朗讀">'
           + '<button class="star'+(fav?" on":"")+'" data-act="fav" data-i="'+i+'" title="加入生詞本" aria-label="加入生詞本">'+(fav?"★":"☆")+'</button>'
           + '<div class="vtop"><span class="vw">'+esc(v.w)+'</span><span class="vj">'+esc(v.jp)+'</span></div>'
           + '<div class="vc">'+esc(v.cmn)+'</div>'
@@ -1253,16 +1259,16 @@ var SEC = {
     build:function(L){
       var S = L.supplement || {};
       var nums = (S.numbers||[]).map(function(n){
-        return '<div class="numcell" data-act="play-text" data-text="'+esc(n.w)+'"><b>'+esc(n.w)+'</b><i>'+esc(n.jp)+'</i><u>'+esc(n.n)+'</u></div>';
+        return '<div class="numcell" data-act="play-text" data-text="'+esc(n.w)+'"'+aud(n.audio)+'><b>'+esc(n.w)+'</b><i>'+esc(n.jp)+'</i><u>'+esc(n.n)+'</u></div>';
       }).join("");
       var groups = (S.groups||[]).map(function(g){
         var cells = (g.items||[]).map(function(it){
-          return '<div class="numcell" data-act="play-text" data-text="'+esc(it.w)+'"><b>'+esc(it.w)+'</b>'
+          return '<div class="numcell" data-act="play-text" data-text="'+esc(it.w)+'"'+aud(it.audio)+'><b>'+esc(it.w)+'</b>'
             + '<i>'+esc(it.jp)+'</i>'+(it.n?'<u>'+esc(it.n)+'</u>':"")+'</div>';
         }).join("");
         return '<div class="supgroup">'+(g.title?'<h4>'+esc(g.title)+'</h4>':"")+'<div class="numrow">'+cells+'</div></div>';
       }).join("");
-      var rows = (S.sentences||[]).map(function(s){ return exRow(s.yue, s.jp, s.cmn, s.note); }).join("");
+      var rows = (S.sentences||[]).map(function(s){ return exRow(s.yue, s.jp, s.cmn, s.note, s.audio); }).join("");
       return (nums ? '<div class="numrow">'+nums+'</div>' : "") + groups + '<div class="exlist">'+rows+'</div>';
     }
   },
@@ -1272,8 +1278,8 @@ var SEC = {
     sub:"教材用整節篇幅講的易混詞，是這一課真正的乾貨。點例句即讀。",
     build:function(L){
       return (L.understand||[]).map(function(u){
-        return '<div class="kcard"><h3>'+esc(u.title)+'</h3><p>'+esc(u.body)+'</p><div class="exlist">'
-          + u.examples.map(function(e){ return exRow(e.yue, e.jp, e.cmn); }).join("")
+        return '<div class="kcard"><h3>'+esc(u.title)+'</h3><p'+aud(u.audio)+'>'+esc(u.body)+'</p><div class="exlist">'
+          + u.examples.map(function(e){ return exRow(e.yue, e.jp, e.cmn, null, e.audio); }).join("")
           + '</div></div>';
       }).join("");
     }
@@ -1331,10 +1337,10 @@ var SEC = {
             }).join("")
           + '</tbody></table>';
       }
-      return '<div class="kcard"><h3>'+esc(G.title)+'</h3><p>'+esc(G.body)+'</p>'
+      return '<div class="kcard"><h3>'+esc(G.title)+'</h3><p'+aud(G.audio)+'>'+esc(G.body)+'</p>'
         + tbl
-        + '<div class="exlist">'+G.examples.map(function(e){ return exRow(e.yue, e.jp, e.cmn); }).join("")+'</div>'
-        + (G.warn ? '<p style="margin-top:12px;color:var(--accent);font-size:13px">'+esc(G.warn)+'</p>' : "")
+        + '<div class="exlist">'+G.examples.map(function(e){ return exRow(e.yue, e.jp, e.cmn, null, e.audio); }).join("")+'</div>'
+        + (G.warn ? '<p'+aud(G.warnAudio)+' style="margin-top:12px;color:var(--accent);font-size:13px">'+esc(G.warn)+'</p>' : "")
         + '</div>';
     }
   },
@@ -1344,7 +1350,7 @@ var SEC = {
     sub:"課本外的語感，比語法更容易記住。",
     build:function(L){
       return (L.culture||[]).map(function(c){
-        return '<div class="kcard"><h3>'+esc(c.title)+'</h3><p>'+esc(c.body)+'</p></div>';
+        return '<div class="kcard"><h3>'+esc(c.title)+'</h3><p'+aud(c.audio)+'>'+esc(c.body)+'</p></div>';
       }).join("");
     }
   },
@@ -1355,12 +1361,13 @@ var SEC = {
     build:function(L){
       var X = L.extra || {};
       var tbl = (X.compare||[]).map(function(c){
-        return '<tr><td>'+esc(c.cmn)+'</td><td class="tone-ex">'+esc(c.yue)+'</td>'
+        return '<tr><td>'+esc(c.cmn)+'</td>'
+          + '<td class="tone-ex clickable" data-act="play-text" data-text="'+esc(c.yue)+'"'+aud(c.audio)+' title="點擊朗讀">'+esc(c.yue)+'</td>'
           + '<td class="tone-val">'+esc(c.jp)+'</td><td class="tone-desc">'+esc(c.ex)+'</td></tr>';
       }).join("");
-      var phrases = (X.phrases||[]).map(function(p){ return exRow(p.yue, p.jp, p.cmn, p.use); }).join("");
+      var phrases = (X.phrases||[]).map(function(p){ return exRow(p.yue, p.jp, p.cmn, p.use, p.audio); }).join("");
       var pits = (X.pitfalls||[]).map(function(p){
-        return '<div class="kcard"><h3>'+esc(p.title)+'</h3><p>'+esc(p.body)+'</p></div>';
+        return '<div class="kcard"><h3>'+esc(p.title)+'</h3><p'+aud(p.audio)+'>'+esc(p.body)+'</p></div>';
       }).join("");
       return (tbl ? '<table class="tone"><thead><tr><th>普通話</th><th>粵語</th><th>粵拼</th><th>例</th></tr></thead><tbody>'+tbl+'</tbody></table>' : "")
         + (phrases ? '<div class="kcard" style="margin-top:22px"><h3>情境延伸</h3>'
@@ -1403,7 +1410,7 @@ var SEC = {
     build:function(L){
       return (L.chars||[]).map(function(c){
         var ws = c.words.map(function(w){
-          return '<div class="ex"><div class="exm"><span class="ey">'+esc(w.w)+'</span></div>'
+          return '<div class="ex clickable"'+aud(w.audio)+'><div class="exm"><span class="ey">'+esc(w.w)+'</span></div>'
             + '<span class="ec">'+esc(w.cmn)+'</span>'
             + '<button class="eb" data-act="play-text" data-text="'+esc(w.w)+'" aria-label="朗讀">▶</button></div>';
         }).join("");
@@ -1508,7 +1515,13 @@ function collectBlocks(root){
     if(txt.length < 2) return;
     var cn = " "+el.className+" ";
     var isYue = /\s(ey|pl-yue|dyue|sent-yue)\s/.test(cn);
-    out.push({el:el, text:txt, lang: isYue ? "yue" : (state.prefs.explain||"cmn")});
+    /* 預生成音頻：粵語例句任何時候都用；講解正文只在「講解：粵」時用，
+       切成「講解：普」就該老老實實用普通話音色，不能被粵語 mp3 覆蓋。 */
+    var auEl = el.closest("[data-audio]");
+    var au = auEl ? auEl.getAttribute("data-audio") : "";
+    var wantAudio = isYue || (state.prefs.explain||"yue") === "yue";
+    out.push({el:el, text:txt, audio: (wantAudio ? (au||null) : null),
+              lang: isYue ? "yue" : (state.prefs.explain||"cmn")});
   });
   return out;
 }
@@ -2165,7 +2178,9 @@ document.addEventListener("click", function(e){
   }
   else if(act==="play-text"){
     var be = t.closest(".vcard") || t.closest(".ex") || t.closest(".numcell") || null;
-    playPlain(t.getAttribute("data-text"), be, "例句");
+    var auEl = t.closest("[data-audio]");
+    var au = auEl ? auEl.getAttribute("data-audio") : "";
+    playPlain(t.getAttribute("data-text"), be, "例句", au);
   }
   else if(act==="play-passage"){
     tts.start([{audio:CUR.passage.audio, text:CUR.passage.text}], {name:"整段朗讀"});
@@ -2189,7 +2204,7 @@ document.addEventListener("click", function(e){
     $$(".sec-read.on, .k-read.on").forEach(function(b){ b.classList.remove("on"); });
     t.classList.add("on");
     toast("朗讀本節 · "+(state.prefs.explain==="yue"?"粵語":"普通話")+"講解");
-    tts.start(blocks.map(function(b){ return {text:b.text, el:b.el, cls:"reading", lang:b.lang}; }),
+    tts.start(blocks.map(function(b){ return {text:b.text, el:b.el, cls:"reading", lang:b.lang, audio:b.audio}; }),
               {gap:180, name:"朗讀本節", onEnd:function(){ t.classList.remove("on"); }});
   }
   else if(act==="read-card"){
@@ -2198,7 +2213,7 @@ document.addEventListener("click", function(e){
     if(!blocks2.length) return;
     $$(".sec-read.on, .k-read.on").forEach(function(b){ b.classList.remove("on"); });
     t.classList.add("on");
-    tts.start(blocks2.map(function(b){ return {text:b.text, el:b.el, cls:"reading", lang:b.lang}; }),
+    tts.start(blocks2.map(function(b){ return {text:b.text, el:b.el, cls:"reading", lang:b.lang, audio:b.audio}; }),
               {gap:180, name:"朗讀這一則", onEnd:function(){ t.classList.remove("on"); }});
   }
   else if(act==="voice-panel"){
