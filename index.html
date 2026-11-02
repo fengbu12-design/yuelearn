@@ -636,6 +636,38 @@ html[data-theme="dark"] .reading{background:#33211A;box-shadow:0 0 0 4px #33211A
 .vbtn{padding:8px 18px;border-radius:9px;border:1px solid var(--line2);background:var(--card);
   color:var(--ink2);font-size:13px;cursor:pointer}
 .vbtn.main{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* 翻譯頁 */
+.tr-panel{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--card)}
+.tr-input{width:100%;min-height:110px;resize:vertical;border:1px solid var(--line);border-radius:10px;
+  padding:12px 14px;font-family:inherit;font-size:14.5px;line-height:1.75;background:var(--paper);color:var(--ink)}
+.tr-input:focus{outline:none;border-color:var(--accent)}
+.tr-ctl{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-top:12px}
+.tr-lab{display:flex;flex-direction:column;gap:4px;font-size:11.5px;color:var(--ink3)}
+.tr-field{border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-family:inherit;font-size:13px;
+  background:var(--paper);color:var(--ink);min-width:112px}
+.tr-go{margin-left:auto}
+.tr-status{margin-top:10px;font-size:12px;color:var(--ink3);line-height:1.6}
+.tr-status.ok{color:var(--jade)}
+.tr-status.warn{color:var(--gold)}
+.tr-status.bad{color:var(--accent)}
+.tr-lines{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.tr-line{border:1px solid var(--line);border-left:3px solid var(--line2);border-radius:10px;
+  padding:10px 14px;background:var(--card)}
+.tr-line.spk-a{border-left-color:var(--accent)}
+.tr-line.spk-b{border-left-color:var(--jade)}
+.tr-meta{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.tr-meta b{font-size:12px;color:var(--ink2);font-weight:600}
+.tr-yue{font-size:16px;line-height:1.7}
+.tr-jp{font-family:var(--mono);font-size:11.5px;color:var(--accent);margin-top:3px;word-break:break-word}
+.tr-cmn{font-size:12.5px;color:var(--ink2);margin-top:4px}
+.tr-note{font-size:12px;color:var(--ink3);margin-top:6px;padding-top:6px;border-top:1px dashed var(--line)}
+.tr-vocab{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.tr-vitem{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;
+  padding:7px 10px;background:var(--card);font-size:12px;color:var(--ink2)}
+.tr-vmain{display:flex;flex-direction:column;line-height:1.3}
+.tr-vmain b{font-size:14px;color:var(--ink)}
+.tr-vmain i{font-family:var(--mono);font-size:10.5px;color:var(--accent);font-style:normal}
 </style>
 </head>
 <body>
@@ -647,6 +679,7 @@ html[data-theme="dark"] .reading{background:#33211A;box-shadow:0 0 0 4px #33211A
     </button>
     <nav id="nav"></nav>
     <div class="side-foot">
+      <button data-act="trans">簡→粵翻譯</button>
       <button data-act="open-vocab">生詞本 <b id="vw-count">0</b></button>
       <button data-act="open-notes">我的筆記</button>
       <button data-act="theme">夜讀模式</button>
@@ -723,8 +756,8 @@ html[data-theme="dark"] .reading{background:#33211A;box-shadow:0 0 0 4px #33211A
 
 <div class="toast" id="toast"></div>
 
-<script src="data/course.js?v=47"></script>
-<script src="data/lessons.js?v=47"></script>
+<script src="data/course.js?v=49"></script>
+<script src="data/lessons.js?v=49"></script>
 <script>
 (function(){
 "use strict";
@@ -2084,12 +2117,158 @@ function applyPrefs(){
   if(eb) eb.textContent = "講解：" + (state.prefs.explain==="yue" ? "粵" : "普");
 }
 
+/* ============ 翻譯（簡體 → 粵語） ============ */
+var TRANS = null;
+
+function transApi(){
+  return String(state.prefs.transUrl || "http://127.0.0.1:8766").replace(/\/+$/, "");
+}
+function transStatus(txt, cls){
+  var el = $("#tr-status"); if(!el) return;
+  el.textContent = txt;
+  el.className = "tr-status" + (cls ? " " + cls : "");
+}
+function checkTransService(){
+  transStatus("檢查本地翻譯服務…", "");
+  fetch(transApi() + "/api/health", {cache:"no-store"}).then(function(r){ return r.json(); })
+    .then(function(d){
+      var s = "服務已連線 · " + (d.backend === "mock" ? "示範模式（假資料）" : (d.model || d.backend));
+      if(d.backend === "openai" && !d.has_key) s += " · ⚠ 未設定 API Key";
+      transStatus(s, d.backend === "mock" ? "warn" : "ok");
+    })
+    .catch(function(){
+      transStatus("本地翻譯服務未啟動 —— 在 D:\\B 開一個終端執行：python _build\\translate_server.py", "bad");
+    });
+}
+
+function renderTrans(){
+  state.view = "trans";
+  document.title = "粵語自習室 · 簡體 → 粵語";
+  $("#crumb").innerHTML = "<b>翻譯</b>";
+  $("#view").className = "wrap";
+  TRANS = TRANS || null;
+
+  $("#view").innerHTML = ''
+  + '<section class="hero"><div class="hero-main"><div class="kicker">YUE · TRANSLATE</div>'
+  + '<h1>簡體中文 → 地道粵語</h1>'
+  + '<div class="meta"><span>本地模型服務</span><span>逐句粵拼</span><span>可朗讀</span><span>可加入生詞本</span></div>'
+  + '</div></section>'
+  + '<section class="sec"><div class="sec-h"><span class="sec-num">譯</span><h2>你想講咩？</h2></div>'
+  + '<p class="sec-sub">用簡體中文寫下想表達的內容。場景與語氣會直接影響用詞——同一個意思，'
+  + '同朋友講同同客戶講，粵語講法唔同。</p>'
+  + '<div class="tr-panel">'
+  +   '<textarea id="tr-input" class="tr-input" placeholder="例如：我想在茶餐厅点一杯冰奶茶，不要糖，再要一个菠萝包。"></textarea>'
+  +   '<div class="tr-ctl">'
+  +     '<label class="tr-lab">場景<input id="tr-scene" class="tr-field" placeholder="茶餐廳 / 銀行 / 睇醫生…"></label>'
+  +     '<label class="tr-lab">語氣<select id="tr-style" class="tr-field"><option>日常</option><option>客氣</option><option>熟絡</option></select></label>'
+  +     '<label class="tr-lab">輪數<select id="tr-turns" class="tr-field"><option>2</option><option selected>3</option><option>4</option><option>6</option></select></label>'
+  +     '<button class="tool tr-go" data-act="trans-run">生成粵語對話</button>'
+  +   '</div>'
+  +   '<div class="tr-status" id="tr-status">…</div>'
+  + '</div></section>'
+  + '<section class="sec" id="tr-result"></section>';
+
+  renderNav();
+  applyPrefs();
+  window.scrollTo(0, 0);
+  checkTransService();
+  if(TRANS) renderTransResult(TRANS);
+}
+
+function renderTransResult(d){
+  var box = $("#tr-result"); if(!box) return;
+  TRANS = d;
+  var lines = (d.dialogue || []).map(function(ln){
+    var cls = "tr-line spk-" + String(ln.spk || "A").toLowerCase();
+    return '<div class="' + cls + '">'
+      + '<div class="tr-meta"><b>' + esc(ln.name || ln.spk || "") + '</b>'
+      +   '<button class="eb" data-act="trans-play" data-text="' + esc(ln.yue) + '" aria-label="朗讀">▶</button>'
+      + '</div>'
+      + '<div class="tr-yue">' + esc(ln.yue) + '</div>'
+      + '<div class="tr-jp">' + esc(ln.jp || "") + '</div>'
+      + (ln.cmn ? '<div class="tr-cmn">' + esc(ln.cmn) + '</div>' : "")
+      + (ln.note ? '<div class="tr-note">' + esc(ln.note) + '</div>' : "")
+      + '</div>';
+  }).join("");
+
+  var vocab = (d.vocab || []).length
+    ? '<div class="tr-vocab">' + d.vocab.map(function(v){
+        return '<div class="tr-vitem"><div class="tr-vmain"><b>' + esc(v.w) + '</b>'
+          + '<i>' + esc(v.jp || "") + '</i></div>'
+          + '<span>' + esc(v.cmn) + '</span>'
+          + '<button class="eb" data-act="trans-play" data-text="' + esc(v.w) + '" aria-label="朗讀">▶</button>'
+          + '<button class="eb" data-act="trans-fav" data-w="' + esc(v.w) + '" data-jp="' + esc(v.jp || "") + '"'
+          + ' data-cmn="' + esc(v.cmn) + '" title="加入生詞本" aria-label="加入生詞本">☆</button>'
+          + '</div>';
+      }).join("") + '</div>'
+    : "";
+
+  var tips = (d.tips || []).length
+    ? '<div class="panel" style="margin-top:18px"><h4>用法提醒</h4><ul>'
+      + d.tips.map(function(t){ return '<li>' + esc(t) + '</li>'; }).join("") + '</ul></div>'
+    : "";
+
+  box.innerHTML = '<div class="sec-h"><span class="sec-num">果</span><h2>地道講法</h2>'
+    + '<button class="tool" data-act="trans-copy" style="margin-left:auto">複製全文</button></div>'
+    + (d.scene ? '<p class="sec-sub">場景：' + esc(d.scene) + '</p>' : "")
+    + '<div class="tr-lines">' + lines + '</div>'
+    + vocab + tips
+    + '<p class="sec-sub" style="margin-top:16px">來源：' + esc(d.backend || "") + ' · '
+    + esc(d.model || "") + (d.elapsed ? ' · ' + d.elapsed + 's' : "")
+    + '　·　僅供學習參考，地道講法因場合而異。</p>';
+}
+
+function transRun(){
+  var text = ($("#tr-input") || {}).value || "";
+  text = text.trim();
+  if(!text){ toast("先寫下你想講嘅內容"); return; }
+  var btn = $("[data-act='trans-run']");
+  if(btn){ btn.disabled = true; btn.textContent = "生成中…"; }
+  transStatus("模型生成中…", "");
+  fetch(transApi() + "/api/translate", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      text: text,
+      scene: ($("#tr-scene") || {}).value || "",
+      style: ($("#tr-style") || {}).value || "日常",
+      turns: +((($("#tr-turns") || {}).value) || 3)
+    })
+  }).then(function(r){ return r.json(); }).then(function(d){
+    if(d.error){ transStatus("失敗：" + d.error, "bad"); toast("翻譯失敗"); return; }
+    checkTransService();
+    renderTransResult(d);
+    var box = $("#tr-result");
+    if(box) box.scrollIntoView({behavior:"smooth", block:"start"});
+  }).catch(function(e){
+    transStatus("連不上本地服務：" + e.message + "　（先跑 python _build\\translate_server.py）", "bad");
+  }).then(function(){
+    if(btn){ btn.disabled = false; btn.textContent = "生成粵語對話"; }
+  });
+}
+
+function transCopy(){
+  if(!TRANS) return;
+  var txt = (TRANS.scene ? "場景：" + TRANS.scene + "\n\n" : "")
+    + (TRANS.dialogue || []).map(function(l){
+        return (l.name || l.spk) + "：" + l.yue + "\n" + (l.jp || "") + "\n" + (l.cmn || "");
+      }).join("\n\n")
+    + (TRANS.tips && TRANS.tips.length ? "\n\n提醒：\n- " + TRANS.tips.join("\n- ") : "");
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(function(){ toast("已複製"); },
+      function(){ toast("複製失敗，請手動選取"); });
+  } else {
+    toast("此瀏覽器不支援自動複製");
+  }
+}
+
 /* ============ 路由 ============ */
 function parseRoute(){
   var h = (location.hash||"").replace(/^#\/?/,"");
   var m = h.match(/^lesson\/(\d+)/);
   if(m) return {view:"lesson", no:+m[1]};
   if(h==="home") return {view:"home"};
+  if(h==="trans") return {view:"trans"};
   return null;
 }
 function goLesson(no){
@@ -2100,6 +2279,7 @@ function onRoute(){
   var r = parseRoute();
   if(!r) return;
   if(r.view==="home"){ renderHome(); }
+  else if(r.view==="trans"){ renderTrans(); }
   else if(!CUR || CUR.no!==r.no){ renderLesson(r.no); }
   else { window.scrollTo(0,0); }
 }
@@ -2119,6 +2299,25 @@ document.addEventListener("click", function(e){
   var act = t.getAttribute("data-act");
 
   if(act==="home"){ closeDrawer(); location.hash = "#/home"; renderHome(); }
+  else if(act==="trans"){ closeDrawer(); location.hash = "#/trans"; renderTrans(); }
+  else if(act==="trans-run"){ transRun(); }
+  else if(act==="trans-copy"){ transCopy(); }
+  else if(act==="trans-play"){
+    var ttext = t.getAttribute("data-text") || "";
+    if(!ttext) return;
+    tts.start([{text:ttext, audio:transApi()+"/api/tts?text="+encodeURIComponent(ttext)}],
+              {name:"翻譯朗讀"});
+  }
+  else if(act==="trans-fav"){
+    var w = t.getAttribute("data-w") || "";
+    if(!w) return;
+    if(state.words.some(function(x){ return x.w===w; })){ toast("已在生詞本"); return; }
+    state.words.push({w:w, jp:t.getAttribute("data-jp")||"", cmn:t.getAttribute("data-cmn")||"",
+                      ex:"（翻譯生成）", at:Date.now()});
+    DB.set("words", state.words);
+    $("#vw-count").textContent = state.words.length;
+    t.textContent = "★"; toast("已加入生詞本");
+  }
   else if(act==="go"){
     var no = +t.getAttribute("data-no");
     var L2 = lessonById(no);
@@ -2386,6 +2585,7 @@ applyPrefs();
 tts.load();
 var r0 = parseRoute();
 if(r0 && r0.view==="home") renderHome();
+else if(r0 && r0.view==="trans") renderTrans();
 else renderLesson(r0 && r0.no ? r0.no
                    : (state.last && lessonById(state.last) ? state.last
                      : (DATA.L03 ? 3 : firstReady())));
