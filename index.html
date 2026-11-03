@@ -660,6 +660,39 @@ html[data-theme="dark"] .reading{background:#33211A;box-shadow:0 0 0 4px #33211A
   .sritem{flex-wrap:wrap;gap:4px 8px}
   .sritem .src{max-width:100%;margin-left:0;flex-basis:100%}
 }
+/* 聽力練習 */
+.lq-bar{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--ink2);margin-bottom:10px}
+.lq-bar .spacer{flex:1}
+.lq-card{border:1px solid var(--line);border-radius:14px;padding:18px;background:var(--card)}
+.lq-play{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.lq-big{width:56px;height:56px;border-radius:50%;background:var(--accent);color:#fff;font-size:20px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;line-height:1}
+.lq-big:hover{filter:brightness(1.06)}
+.lq-opts{display:flex;flex-direction:column;gap:8px}
+.lq-opt{display:flex;align-items:center;gap:12px;text-align:left;padding:12px 14px;border-radius:10px;
+  border:1px solid var(--line);background:var(--paper);color:var(--ink);font-size:14.5px;cursor:pointer}
+.lq-opt:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft)}
+.lq-opt b{font-family:var(--mono);font-size:12px;color:var(--ink3);flex:0 0 18px}
+.lq-opt.right{border-color:var(--jade);background:var(--jade-soft)}
+.lq-opt.wrong{border-color:var(--accent);background:var(--accent-soft)}
+.lq-opt:disabled{cursor:default;opacity:.92}
+.lq-dict{display:flex;flex-direction:column;gap:10px}
+.lq-in{width:100%;min-height:86px;border:1px solid var(--line);border-radius:10px;padding:12px 14px;
+  font-family:inherit;font-size:15px;line-height:1.7;background:var(--paper);color:var(--ink);resize:vertical}
+.lq-in:focus{outline:none;border-color:var(--accent)}
+.lq-dict-btns{display:flex;gap:8px}
+.lq-fb{margin-top:14px;display:none;border-top:1px dashed var(--line);padding-top:12px}
+.lq-fb.on{display:block}
+.lq-res{font-size:13px;font-weight:600;margin-bottom:6px}
+.lq-fb.ok .lq-res{color:var(--jade)}
+.lq-fb.bad .lq-res{color:var(--accent)}
+.lq-ans{font-size:16px;line-height:1.7}
+.lq-jp{font-family:var(--mono);font-size:11.5px;color:var(--accent);margin-top:3px}
+.lq-cmn{font-size:12.5px;color:var(--ink2);margin-top:4px}
+.lq-fb .tool{margin-top:12px}
+.lq-modes{display:flex;gap:8px;align-items:center;margin-top:16px;flex-wrap:wrap}
+.lq-sum-btns{display:flex;gap:10px;margin-top:8px}
+.tool.main{background:var(--accent);border-color:var(--accent);color:#fff}
 
 </style>
 </head>
@@ -673,6 +706,7 @@ html[data-theme="dark"] .reading{background:#33211A;box-shadow:0 0 0 4px #33211A
     <nav id="nav"></nav>
     <div class="side-foot">
       <button data-act="search">全站搜索</button>
+      <button data-act="listen">聽力練習</button>
       <button data-act="open-vocab">生詞本 <b id="vw-count">0</b></button>
       <button data-act="open-notes">我的筆記</button>
       <button data-act="theme">夜讀模式</button>
@@ -749,8 +783,8 @@ html[data-theme="dark"] .reading{background:#33211A;box-shadow:0 0 0 4px #33211A
 
 <div class="toast" id="toast"></div>
 
-<script src="data/course.js?v=51"></script>
-<script src="data/lessons.js?v=51"></script>
+<script src="data/course.js?v=53"></script>
+<script src="data/lessons.js?v=53"></script>
 <script>
 (function(){
 "use strict";
@@ -2259,6 +2293,209 @@ function applyPendingJump(){
   pendingJump = null;
 }
 
+/* ============ 聽力練習 ============ */
+var LQ = null;
+var LQ_N = 10;
+
+function listenPool(){
+  var pool = [];
+  Object.keys(DATA).sort().forEach(function(k){
+    var L = DATA[k];
+    (L.sentences || []).forEach(function(s){
+      if(!s.audio) return;
+      pool.push({lid:k, no:L.no, sid:s.id, yue:s.yue, jp:s.jp || "",
+                 cmn:s.cmn || "", audio:s.audio, slow:s.audioSlow});
+    });
+  });
+  return pool;
+}
+
+function shuffle(a){
+  a = a.slice();
+  for(var i = a.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+
+function normText(s){
+  return String(s || "").replace(/[\s，。！？；：、,.!?;:"'「」『』（）()]/g, "").toLowerCase();
+}
+
+function newListenSession(mode){
+  var pool = listenPool();
+  LQ = {
+    pool: pool,
+    list: shuffle(pool).slice(0, LQ_N),
+    i: 0, right: 0, wrong: 0, answered: false,
+    mode: mode || (LQ && LQ.mode) || "meaning",
+    q: null
+  };
+  buildListenQuestion();
+}
+
+function buildListenQuestion(){
+  var it = LQ.list[LQ.i];
+  LQ.answered = false;
+  if(LQ.mode === "meaning"){
+    var opts = [{t: it.cmn, ok: true}];
+    var used = {};
+    used[it.cmn] = true;
+    shuffle(LQ.pool).forEach(function(x){
+      if(opts.length >= 4 || !x.cmn || used[x.cmn]) return;
+      used[x.cmn] = true;
+      opts.push({t: x.cmn, ok: false});
+    });
+    LQ.q = {opts: shuffle(opts), answer: -1};
+    LQ.q.opts.forEach(function(o, i){ if(o.ok) LQ.q.answer = i; });
+  } else {
+    LQ.q = {opts: null, answer: -1};
+  }
+  renderListen();
+}
+
+function renderListen(){
+  if(!LQ || !LQ.list.length){ newListenSession("meaning"); return; }
+  var it = LQ.list[LQ.i];
+  state.view = "listen";
+  document.title = "粵語自習室 · 聽力練習";
+  $("#crumb").innerHTML = "<b>聽力練習</b>";
+  $("#view").className = "wrap";
+
+  var body = "";
+  if(LQ.mode === "meaning"){
+    body = '<div class="lq-opts" data-answer="' + LQ.q.answer + '">'
+      + LQ.q.opts.map(function(o, i){
+          return '<button class="lq-opt" data-act="lq-pick" data-i="' + i + '">'
+            + '<b>' + String.fromCharCode(65 + i) + '</b><span>' + esc(o.t) + '</span></button>';
+        }).join("") + '</div>';
+  } else {
+    body = '<div class="lq-dict"><textarea id="lq-in" class="lq-in" '
+      + 'placeholder="聽到甚麼就寫甚麼（標點、空格可以省）" autocomplete="off"></textarea>'
+      + '<div class="lq-dict-btns"><button class="tool" data-act="lq-submit">提交</button>'
+      + '<button class="tool" data-act="lq-reveal">看答案</button></div></div>';
+  }
+
+  $("#view").innerHTML = ''
+  + '<section class="hero"><div class="hero-main"><div class="kicker">YUE · LISTENING</div>'
+  + '<h1>聽力練習</h1>'
+  + '<div class="meta"><span>教材原聲</span><span>每輪 ' + LQ_N + ' 題</span>'
+  + '<span>' + (LQ.mode === "meaning" ? "聽音選義" : "聽寫") + '</span></div>'
+  + '</div></section>'
+  + '<section class="sec"><div class="sec-h"><span class="sec-num">聽</span><h2>'
+  + (LQ.mode === "meaning" ? "先聽，再選意思" : "先聽，再把整句寫出來") + '</h2></div>'
+  + '<div class="lq-bar"><span id="lq-prog">第 ' + (LQ.i + 1) + ' / ' + LQ.list.length + ' 題</span>'
+  + '<span class="spacer"></span>'
+  + '<span id="lq-score">正確 <b>' + LQ.right + '</b> · 錯誤 <b>' + LQ.wrong + '</b></span></div>'
+  + '<div class="lq-card">'
+  +   '<div class="lq-play">'
+  +     '<button class="lq-big" data-act="lq-play" aria-label="播放">▶</button>'
+  +     '<button class="tool" data-act="lq-slow">慢速再聽</button>'
+  +   '</div>'
+  +   body
+  +   '<div class="lq-fb" id="lq-fb"></div>'
+  + '</div>'
+  + '<div class="lq-modes"><span class="sec-sub">模式：</span>'
+  +   '<button class="tool' + (LQ.mode === "meaning" ? " active" : "") + '" data-act="lq-mode" data-mode="meaning">聽音選義</button>'
+  +   '<button class="tool' + (LQ.mode === "dict" ? " active" : "") + '" data-act="lq-mode" data-mode="dict">聽寫</button>'
+  +   '<button class="tool" data-act="lq-restart" style="margin-left:auto">重新開始</button>'
+  + '</div>'
+  + '</section>';
+
+  renderNav();
+  applyPrefs();
+  window.scrollTo(0, 0);
+  var inp = $("#lq-in");
+  if(inp) inp.focus();
+}
+
+function updateListenStats(){
+  var p = $("#lq-prog");
+  if(p) p.textContent = "第 " + (LQ.i + 1) + " / " + LQ.list.length + " 題";
+  var s = $("#lq-score");
+  if(s) s.innerHTML = "正確 <b>" + LQ.right + "</b> · 錯誤 <b>" + LQ.wrong + "</b>";
+}
+
+function showListenFeedback(ok, it, counted){
+  var fb = $("#lq-fb"); if(!fb) return;
+  fb.className = "lq-fb on " + (ok ? "ok" : "bad");
+  fb.innerHTML = '<div class="lq-res">' + (ok ? "✓ 答對" : (counted === false ? "已顯示答案" : "✗ 答錯")) + '</div>'
+    + '<div class="lq-ans">' + esc(it.yue) + '</div>'
+    + '<div class="lq-jp">' + esc(it.jp) + '</div>'
+    + '<div class="lq-cmn">' + esc(it.cmn) + '　·　第 ' + pad2(it.no) + ' 課</div>'
+    + '<button class="tool" data-act="lq-next">'
+    + (LQ.i + 1 >= LQ.list.length ? "看本輪成績" : "下一題") + '</button>';
+}
+
+function lqPick(t){
+  if(!LQ || LQ.answered) return;
+  var i = +t.getAttribute("data-i");
+  var ok = !!(LQ.q.opts[i] && LQ.q.opts[i].ok);
+  LQ.answered = true;
+  if(ok) LQ.right++; else LQ.wrong++;
+  $$(".lq-opt").forEach(function(b, k){
+    b.disabled = true;
+    if(LQ.q.opts[k].ok) b.classList.add("right");
+    else if(k === i) b.classList.add("wrong");
+  });
+  updateListenStats();
+  showListenFeedback(ok, LQ.list[LQ.i]);
+}
+
+function lqSubmit(){
+  if(!LQ || LQ.answered) return;
+  var inp = $("#lq-in"); if(!inp) return;
+  var it = LQ.list[LQ.i];
+  var ok = normText(inp.value) === normText(it.yue);
+  LQ.answered = true;
+  if(ok) LQ.right++; else LQ.wrong++;
+  inp.disabled = true;
+  updateListenStats();
+  showListenFeedback(ok, it);
+}
+
+function lqReveal(){
+  if(!LQ || LQ.answered) return;
+  LQ.answered = true;
+  var inp = $("#lq-in"); if(inp) inp.disabled = true;
+  showListenFeedback(false, LQ.list[LQ.i], false);
+}
+
+function lqNext(){
+  if(!LQ) return;
+  if(LQ.i + 1 >= LQ.list.length){ renderListenSummary(); return; }
+  LQ.i++;
+  buildListenQuestion();
+}
+
+function renderListenSummary(){
+  state.view = "listen";
+  var total = LQ.list.length;
+  var rate = total ? Math.round(LQ.right / total * 100) : 0;
+  $("#view").innerHTML = ''
+  + '<section class="hero"><div class="hero-main"><div class="kicker">YUE · LISTENING</div>'
+  + '<h1>本輪成績</h1></div></section>'
+  + '<section class="sec"><div class="sec-h"><span class="sec-num">績</span><h2>'
+  + LQ.right + ' / ' + total + '　正確率 ' + rate + '%</h2></div>'
+  + '<p class="sec-sub">' + (rate >= 80 ? "聽得不錯，可以試試聽寫模式。"
+      : rate >= 50 ? "再練一輪，注意連讀同語氣詞。"
+      : "先回到課文頁跟讀幾遍，再來練聽力。") + '</p>'
+  + '<div class="lq-sum-btns">'
+  + '<button class="tool main" data-act="lq-again">再來一輪</button>'
+  + '<button class="tool" data-act="lq-mode" data-mode="' + (LQ.mode === "meaning" ? "dict" : "meaning") + '">'
+  + '換成' + (LQ.mode === "meaning" ? "聽寫" : "聽音選義") + '</button>'
+  + '</div></section>';
+  window.scrollTo(0, 0);
+}
+
+function lqPlay(slow){
+  if(!LQ || !LQ.list.length) return;
+  var it = LQ.list[LQ.i];
+  var audio = slow ? (it.slow || it.audio) : it.audio;
+  tts.start([{audio: audio, text: it.yue}], {name: slow ? "聽力·慢速" : "聽力"});
+}
+
 /* ============ 路由 ============ */
 function parseRoute(){
   var h = (location.hash||"").replace(/^#\/?/,"");
@@ -2266,6 +2503,7 @@ function parseRoute(){
   if(m) return {view:"lesson", no:+m[1]};
   if(h==="home") return {view:"home"};
   if(h==="search") return {view:"search"};
+  if(h==="listen") return {view:"listen"};
   return null;
 }
 function goLesson(no){
@@ -2277,6 +2515,7 @@ function onRoute(){
   if(!r) return;
   if(r.view==="home"){ renderHome(); }
   else if(r.view==="search"){ renderSearch(); }
+  else if(r.view==="listen"){ if(!LQ || !LQ.list.length) newListenSession("meaning"); else renderListen(); }
   else if(!CUR || CUR.no!==r.no){ renderLesson(r.no); }
   else { window.scrollTo(0,0); }
 }
@@ -2302,6 +2541,19 @@ document.addEventListener("click", function(e){
     if(qi){ qi.value = ""; paintSearch(""); qi.focus(); }
   }
   else if(act==="open-result"){ closeDrawer(); openSearchResult(t); }
+  else if(act==="listen"){
+    closeDrawer();
+    location.hash = "#/listen";
+    if(!LQ || !LQ.list.length) newListenSession("meaning"); else renderListen();
+  }
+  else if(act==="lq-pick"){ lqPick(t); }
+  else if(act==="lq-submit"){ lqSubmit(); }
+  else if(act==="lq-reveal"){ lqReveal(); }
+  else if(act==="lq-next"){ lqNext(); }
+  else if(act==="lq-play"){ lqPlay(false); }
+  else if(act==="lq-slow"){ lqPlay(true); }
+  else if(act==="lq-mode"){ newListenSession(t.getAttribute("data-mode")); }
+  else if(act==="lq-restart" || act==="lq-again"){ newListenSession(); }
   else if(act==="go"){
     var no = +t.getAttribute("data-no");
     var L2 = lessonById(no);
@@ -2570,6 +2822,7 @@ tts.load();
 var r0 = parseRoute();
 if(r0 && r0.view==="home") renderHome();
 else if(r0 && r0.view==="search") renderSearch();
+else if(r0 && r0.view==="listen"){ newListenSession("meaning"); }
 else renderLesson(r0 && r0.no ? r0.no
                    : (state.last && lessonById(state.last) ? state.last
                      : (DATA.L03 ? 3 : firstReady())));
