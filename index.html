@@ -740,6 +740,18 @@ html[data-theme="dark"] .reading{background:#33211A;box-shadow:0 0 0 4px #33211A
 .ph-pair b{font-size:14px;font-weight:500}
 .ph-notes{margin:10px 0 0;padding-left:18px;font-size:12.5px;color:var(--ink2);line-height:1.85}
 
+/* 相關課 */
+.rel-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.rel-card{display:flex;flex-direction:column;gap:5px;text-align:left;padding:12px 14px;
+  border:1px solid var(--line);border-radius:10px;background:var(--card);cursor:pointer}
+.rel-card:hover{border-color:var(--accent);background:var(--accent-soft)}
+.rel-no{font-family:var(--mono);font-size:10.5px;color:var(--ink3)}
+.rel-card b{font-size:15px;font-weight:600}
+.rel-words{display:flex;flex-wrap:wrap;gap:5px}
+.rel-words i{font-style:normal;font-size:11.5px;color:var(--accent);background:var(--accent-soft);
+  border-radius:6px;padding:2px 6px}
+.rel-card em{font-style:normal;font-size:11px;color:var(--ink3);margin-left:auto}
+
 </style>
 </head>
 <body>
@@ -831,8 +843,8 @@ html[data-theme="dark"] .reading{background:#33211A;box-shadow:0 0 0 4px #33211A
 
 <div class="toast" id="toast"></div>
 
-<script src="data/course.js?v=55"></script>
-<script src="data/lessons.js?v=55"></script>
+<script src="data/course.js?v=56"></script>
+<script src="data/lessons.js?v=56"></script>
 <script>
 (function(){
 "use strict";
@@ -1892,6 +1904,9 @@ function renderLesson(no){
         + body + '</section>';
     });
 
+    /* 相關課 */
+    HTML += relatedSection(L);
+
     /* 筆記 */
     var noteVal = state.notes.lesson[L.id] || "";
     var sentNotes = Object.keys(state.notes.sent).filter(function(k){ return k.indexOf(L.id+"-S")===0 && state.notes.sent[k]; });
@@ -2782,6 +2797,65 @@ function renderPhonics(){
       if(box) box.textContent = shown + " / " + items.length + " 課";
     });
   }
+}
+
+/* ============ 相關課（由詞彙復用自動推導） ============ */
+var LINKMAP = null;
+
+function lessonText(L){
+  var parts = [];
+  (L.sentences || []).forEach(function(s){ parts.push(s.yue); });
+  var ps = L.passage; if(ps) (ps.lines || []).forEach(function(x){ parts.push(x.yue); });
+  var dg = L.dialogue; if(dg) (dg.lines || []).forEach(function(x){ parts.push(x.yue); });
+  var x = L.extra || {};
+  (x.phrases || []).forEach(function(e){ parts.push(e.yue); });
+  (L.understand || []).forEach(function(u){
+    if(u.body) parts.push(u.body);
+    (u.examples || []).forEach(function(e){ parts.push(e.yue || ""); });
+  });
+  return parts.join(" ");
+}
+
+function buildLinks(){
+  if(LINKMAP) return LINKMAP;
+  var texts = {}, words = {};
+  Object.keys(DATA).forEach(function(k){
+    texts[k] = lessonText(DATA[k]);
+    words[k] = (DATA[k].vocab || []).map(function(v){ return v.w; })
+      .filter(function(w){ return w.length >= 2; });
+  });
+  var map = {};
+  Object.keys(DATA).forEach(function(k){
+    var cand = [];
+    Object.keys(DATA).forEach(function(k2){
+      if(k2 === k) return;
+      var hit = words[k].filter(function(w){ return texts[k2].indexOf(w) >= 0; });
+      if(hit.length){
+        cand.push({lid:k2, no:DATA[k2].no, title:DATA[k2].title, words:hit});
+      }
+    });
+    cand.sort(function(a, b){ return b.words.length - a.words.length || a.no - b.no; });
+    map[k] = cand.slice(0, 3);
+  });
+  LINKMAP = map;
+  return map;
+}
+
+function relatedSection(L){
+  var rel = buildLinks()[L.id] || [];
+  if(!rel.length) return "";
+  return '<section class="sec" id="related"><div class="sec-h"><span class="sec-num">聯</span><h2>相關課</h2></div>'
+    + '<p class="sec-sub">本課的詞會在這幾課的課文裡再出現——同一個詞換個場景再見一次，比背單詞表記得住。</p>'
+    + '<div class="rel-list">' + rel.map(function(r){
+        return '<button class="rel-card" data-act="go" data-no="' + r.no + '">'
+          + '<span class="rel-no">第 ' + pad2(r.no) + ' 課</span>'
+          + '<b>' + esc(r.title) + '</b>'
+          + '<span class="rel-words">'
+          + r.words.slice(0, 4).map(function(w){ return '<i>' + esc(w) + '</i>'; }).join("")
+          + '</span>'
+          + '<em>共用 ' + r.words.length + ' 個詞</em>'
+          + '</button>';
+      }).join("") + '</div></section>';
 }
 
 /* ============ 路由 ============ */
