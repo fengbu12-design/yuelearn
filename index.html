@@ -725,6 +725,21 @@ html[data-theme="dark"] .reading{background:#33211A;box-shadow:0 0 0 4px #33211A
 .rv-g.ok:hover{border-color:var(--jade);background:var(--jade-soft)}
 .rv-foot{margin-top:14px;text-align:center}
 
+/* 語音總覽 */
+.ph-card{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--card);
+  margin-bottom:12px;scroll-margin-top:88px}
+.ph-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.ph-h h3{margin:0;font-size:16px;line-height:1.5}
+.ph-h .tool{margin-left:auto}
+.ph-no{font-family:var(--mono);font-size:11px;color:var(--ink3)}
+.ph-intro{font-size:12.5px;color:var(--ink2);line-height:1.85;margin:8px 0 10px}
+.ph-cmp{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.ph-pair{border:1px solid var(--line);border-radius:8px;padding:4px 8px;
+  display:inline-flex;gap:6px;align-items:baseline}
+.ph-pair i{font-family:var(--mono);font-size:11px;color:var(--accent);font-style:normal}
+.ph-pair b{font-size:14px;font-weight:500}
+.ph-notes{margin:10px 0 0;padding-left:18px;font-size:12.5px;color:var(--ink2);line-height:1.85}
+
 </style>
 </head>
 <body>
@@ -739,6 +754,7 @@ html[data-theme="dark"] .reading{background:#33211A;box-shadow:0 0 0 4px #33211A
       <button data-act="search">全站搜索</button>
       <button data-act="listen">聽力練習</button>
       <button data-act="review">複習 <b id="rv-count">0</b></button>
+      <button data-act="phonics">語音總覽</button>
       <button data-act="open-vocab">生詞本 <b id="vw-count">0</b></button>
       <button data-act="open-notes">我的筆記</button>
       <button data-act="theme">夜讀模式</button>
@@ -815,8 +831,8 @@ html[data-theme="dark"] .reading{background:#33211A;box-shadow:0 0 0 4px #33211A
 
 <div class="toast" id="toast"></div>
 
-<script src="data/course.js?v=54"></script>
-<script src="data/lessons.js?v=54"></script>
+<script src="data/course.js?v=55"></script>
+<script src="data/lessons.js?v=55"></script>
 <script>
 (function(){
 "use strict";
@@ -2681,6 +2697,93 @@ function rvPlay(){
   tts.start([{audio: wordAudio(w.w), text: w.w}], {name: "生詞朗讀"});
 }
 
+/* ============ 語音總覽 ============ */
+function phonicsItems(){
+  var items = [];
+  Object.keys(DATA).sort().forEach(function(k){
+    var L = DATA[k];
+    if(!L.phonetics) return;
+    items.push({lid:k, no:L.no, title:L.title, ph:L.phonetics});
+  });
+  return items;
+}
+
+function phCard(x){
+  var P = x.ph;
+  var tbl = "";
+  if((P.table || []).length){
+    var cls = P.cols || [];
+    tbl = '<table class="tone ph-table">'
+      + ((P.headers || []).length
+          ? '<thead><tr>' + P.headers.map(function(h){ return '<th>' + esc(h) + '</th>'; }).join("") + '</tr></thead>'
+          : "")
+      + '<tbody>' + P.table.map(function(r){
+          return '<tr>' + r.map(function(c, i){
+            return '<td' + (cls[i] ? ' class="' + cls[i] + '"' : "") + '>' + esc(c) + '</td>';
+          }).join("") + '</tr>';
+        }).join("") + '</tbody></table>';
+  }
+  var cmp = (P.compare || []).length
+    ? '<div class="ph-cmp">' + P.compare.map(function(c){
+        return '<span class="ph-pair"><i>' + esc(c[0]) + '</i><b>' + esc(c[1]) + '</b></span>';
+      }).join("") + '</div>'
+    : "";
+  var notes = (P.notes || []).length
+    ? '<ul class="ph-notes">' + P.notes.map(function(n){ return '<li>' + esc(n) + '</li>'; }).join("") + '</ul>'
+    : "";
+  return '<div class="ph-card" data-text="' + esc(x.title + " " + P.title + " " + (P.intro || "") + " "
+      + (P.notes || []).join(" ")) + '">'
+    + '<div class="ph-h"><span class="ph-no">L' + pad2(x.no) + '</span>'
+    + '<h3>' + esc(P.title) + '</h3>'
+    + '<button class="tool" data-act="go" data-no="' + x.no + '">第 ' + x.no + ' 課 →</button></div>'
+    + (P.intro ? '<p class="ph-intro">' + esc(P.intro) + '</p>' : "")
+    + tbl + cmp + notes
+    + '</div>';
+}
+
+function renderPhonics(){
+  state.view = "phonics";
+  document.title = "粵語自習室 · 語音總覽";
+  $("#crumb").innerHTML = "<b>語音總覽</b>";
+  $("#view").className = "wrap";
+  var items = phonicsItems();
+  var nRow = 0;
+  items.forEach(function(x){ nRow += (x.ph.table || []).length; });
+
+  $("#view").innerHTML = ''
+  + '<section class="hero"><div class="hero-main"><div class="kicker">YUE · PHONOLOGY</div>'
+  + '<h1>語音總覽</h1>'
+  + '<div class="meta"><span>' + items.length + ' 課語音點</span>'
+  + '<span>' + nRow + ' 條例字</span><span>聲母 / 韻母 / 聲調</span></div>'
+  + '</div></section>'
+  + '<section class="sec"><div class="sec-h"><span class="sec-num">音</span><h2>二十課的語音重點，一頁查完</h2></div>'
+  + '<p class="sec-sub">原本每個語音點只出現在所屬那一課。這裡按課號排開，'
+  + '可以搜「聲調」「入聲」「ng」直接跳到相關課。</p>'
+  + '<div class="srchbar"><input id="ph-q" class="srchin" placeholder="搜語音點，例如：入聲 / ng / 韻母" '
+  + 'autocomplete="off" spellcheck="false" aria-label="篩選語音點">'
+  + '<span class="sec-sub" id="ph-n">' + items.length + ' 課</span></div>'
+  + '<div id="ph-list">' + items.map(phCard).join("") + '</div></section>';
+
+  renderNav();
+  applyPrefs();
+  window.scrollTo(0, 0);
+  var q = $("#ph-q");
+  if(q){
+    q.addEventListener("input", function(){
+      var n = qnorm(q.value);
+      var shown = 0;
+      $$(".ph-card").forEach(function(c){
+        var hit = !n || qnorm(c.getAttribute("data-text") || "").indexOf(n) >= 0 ||
+                  qnorm(c.textContent).indexOf(n) >= 0;
+        c.style.display = hit ? "" : "none";
+        if(hit) shown++;
+      });
+      var box = $("#ph-n");
+      if(box) box.textContent = shown + " / " + items.length + " 課";
+    });
+  }
+}
+
 /* ============ 路由 ============ */
 function parseRoute(){
   var h = (location.hash||"").replace(/^#\/?/,"");
@@ -2690,6 +2793,7 @@ function parseRoute(){
   if(h==="search") return {view:"search"};
   if(h==="listen") return {view:"listen"};
   if(h==="review") return {view:"review"};
+  if(h==="phonics") return {view:"phonics"};
   return null;
 }
 function goLesson(no){
@@ -2703,6 +2807,7 @@ function onRoute(){
   else if(r.view==="search"){ renderSearch(); }
   else if(r.view==="listen"){ if(!LQ || !LQ.list.length) newListenSession("meaning"); else renderListen(); }
   else if(r.view==="review"){ if(!RV) startReview(); else renderReview(); }
+  else if(r.view==="phonics"){ renderPhonics(); }
   else if(!CUR || CUR.no!==r.no){ renderLesson(r.no); }
   else { window.scrollTo(0,0); }
 }
@@ -2750,6 +2855,7 @@ document.addEventListener("click", function(e){
   else if(act==="rv-grade"){ rvGrade(+t.getAttribute("data-g")); }
   else if(act==="rv-again"){ RV = {list: shuffle(RV.list), i: 0, ok: 0, bad: 0, revealed: false}; renderReview(); }
   else if(act==="rv-play"){ rvPlay(); }
+  else if(act==="phonics"){ closeDrawer(); location.hash = "#/phonics"; renderPhonics(); }
   else if(act==="go"){
     var no = +t.getAttribute("data-no");
     var L2 = lessonById(no);
@@ -3021,6 +3127,7 @@ if(r0 && r0.view==="home") renderHome();
 else if(r0 && r0.view==="search") renderSearch();
 else if(r0 && r0.view==="listen"){ newListenSession("meaning"); }
 else if(r0 && r0.view==="review"){ startReview(); }
+else if(r0 && r0.view==="phonics"){ renderPhonics(); }
 else renderLesson(r0 && r0.no ? r0.no
                    : (state.last && lessonById(state.last) ? state.last
                      : (DATA.L03 ? 3 : firstReady())));
