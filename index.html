@@ -637,6 +637,30 @@ html[data-theme="dark"] .reading{background:#33211A;box-shadow:0 0 0 4px #33211A
   color:var(--ink2);font-size:13px;cursor:pointer}
 .vbtn.main{background:var(--accent);border-color:var(--accent);color:#fff}
 
+/* 全站搜索 */
+.srchbar{display:flex;gap:8px;align-items:center;margin-bottom:14px}
+.srchin{flex:1;min-width:0;border:1px solid var(--line);border-radius:10px;padding:11px 14px;
+  font-family:inherit;font-size:15px;background:var(--card);color:var(--ink)}
+.srchin:focus{outline:none;border-color:var(--accent)}
+.srchres{min-height:60px}
+.srch-h{margin:18px 0 8px;font-size:12.5px;color:var(--ink3);letter-spacing:.04em}
+.srchlist{display:flex;flex-direction:column;gap:6px}
+.sritem{display:flex;align-items:baseline;gap:10px;width:100%;text-align:left;
+  border:1px solid var(--line);border-radius:9px;padding:9px 12px;background:var(--card);cursor:pointer}
+.sritem:hover{border-color:var(--line2);background:var(--accent-soft)}
+.sritem b{font-size:14.5px;font-weight:600}
+.sritem em{font-family:var(--mono);font-size:11px;color:var(--accent);font-style:normal;flex:0 0 auto}
+.sritem i{font-style:normal;font-size:11.5px;color:var(--ink3);margin-left:auto}
+.sritem .srt{font-family:var(--mono);font-size:10.5px;color:var(--ink3);flex:0 0 42px}
+.sritem .src{font-size:12px;color:var(--ink2);margin-left:auto;max-width:46%;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.srsent b{font-weight:500}
+.flash{outline:2px solid var(--accent);outline-offset:3px;border-radius:10px}
+@media (max-width:560px){
+  .sritem{flex-wrap:wrap;gap:4px 8px}
+  .sritem .src{max-width:100%;margin-left:0;flex-basis:100%}
+}
+
 </style>
 </head>
 <body>
@@ -648,6 +672,7 @@ html[data-theme="dark"] .reading{background:#33211A;box-shadow:0 0 0 4px #33211A
     </button>
     <nav id="nav"></nav>
     <div class="side-foot">
+      <button data-act="search">全站搜索</button>
       <button data-act="open-vocab">生詞本 <b id="vw-count">0</b></button>
       <button data-act="open-notes">我的筆記</button>
       <button data-act="theme">夜讀模式</button>
@@ -724,8 +749,8 @@ html[data-theme="dark"] .reading{background:#33211A;box-shadow:0 0 0 4px #33211A
 
 <div class="toast" id="toast"></div>
 
-<script src="data/course.js?v=50"></script>
-<script src="data/lessons.js?v=50"></script>
+<script src="data/course.js?v=51"></script>
+<script src="data/lessons.js?v=51"></script>
 <script>
 (function(){
 "use strict";
@@ -2085,12 +2110,162 @@ function applyPrefs(){
   if(eb) eb.textContent = "講解：" + (state.prefs.explain==="yue" ? "粵" : "普");
 }
 
+/* ============ 全站搜索 ============ */
+var IDX = null;
+var pendingJump = null;
+
+function buildIndex(){
+  if(IDX) return IDX;
+  var idx = {vocab:[], sent:[], lesson:[]};
+  Object.keys(DATA).sort().forEach(function(k){
+    var L = DATA[k];
+    idx.lesson.push({lid:k, no:L.no, title:L.title, volume:L.volume});
+    (L.vocab||[]).forEach(function(v){
+      idx.vocab.push({lid:k, no:L.no, w:v.w, jp:v.jp||"", cmn:v.cmn||"", ex:v.ex||""});
+    });
+    (L.sentences||[]).forEach(function(s){
+      idx.sent.push({lid:k, no:L.no, sid:s.id, yue:s.yue, jp:s.jp||"", cmn:s.cmn||""});
+    });
+  });
+  IDX = idx;
+  return idx;
+}
+
+function qnorm(s){ return String(s||"").toLowerCase().trim(); }
+
+function searchAll(q){
+  var n = qnorm(q);
+  if(!n) return {lesson:[], vocab:[], sent:[]};
+  var idx = buildIndex();
+  var out = {lesson:[], vocab:[], sent:[]};
+  idx.lesson.forEach(function(x){
+    if(qnorm(x.title).indexOf(n) >= 0 || qnorm(x.volume).indexOf(n) >= 0) out.lesson.push(x);
+  });
+  idx.vocab.forEach(function(x){
+    if(qnorm(x.w).indexOf(n) >= 0 || qnorm(x.jp).indexOf(n) >= 0 ||
+       qnorm(x.cmn).indexOf(n) >= 0 || qnorm(x.ex).indexOf(n) >= 0) out.vocab.push(x);
+  });
+  idx.sent.forEach(function(x){
+    if(qnorm(x.yue).indexOf(n) >= 0 || qnorm(x.jp).indexOf(n) >= 0 ||
+       qnorm(x.cmn).indexOf(n) >= 0) out.sent.push(x);
+  });
+  return out;
+}
+
+function renderSearch(){
+  state.view = "search";
+  document.title = "粵語自習室 · 全站搜索";
+  $("#crumb").innerHTML = "<b>搜索</b>";
+  $("#view").className = "wrap";
+  var idx = buildIndex();
+  $("#view").innerHTML = ''
+  + '<section class="hero"><div class="hero-main"><div class="kicker">YUE · SEARCH</div>'
+  + '<h1>全站搜索</h1>'
+  + '<div class="meta"><span>' + idx.vocab.length + ' 條詞彙</span>'
+  + '<span>' + idx.sent.length + ' 句課文</span><span>' + idx.lesson.length + ' 課</span>'
+  + '<span>支援粵拼</span></div>'
+  + '</div></section>'
+  + '<section class="sec"><div class="sec-h"><span class="sec-num">搜</span><h2>查詞、查句、查課</h2></div>'
+  + '<p class="sec-sub">漢字、粵拼（如 ngo5）、普通話釋義都可以。輸入即時出結果，點一下跳到該課並定位。</p>'
+  + '<div class="srchbar"><input id="q" class="srchin" placeholder="例如：唔該 / ngo5 / 謝謝" '
+  + 'autocomplete="off" spellcheck="false" aria-label="搜索">'
+  + '<button class="tool" data-act="search-clear">清除</button></div>'
+  + '<div class="srchres" id="sr"></div></section>';
+  renderNav();
+  applyPrefs();
+  window.scrollTo(0, 0);
+  var inp = $("#q");
+  if(inp){
+    inp.addEventListener("input", function(){ paintSearch(inp.value); });
+    inp.focus();
+  }
+  paintSearch("");
+}
+
+function paintSearch(q){
+  var box = $("#sr"); if(!box) return;
+  var n = qnorm(q);
+  if(!n){
+    box.innerHTML = '<p class="sec-sub">試試搜「奶茶」「點解」或者「ngo5」。搜到的話，點一下就能跳到那一課並定位。</p>';
+    return;
+  }
+  var r = searchAll(q);
+  var total = r.lesson.length + r.vocab.length + r.sent.length;
+  if(!total){ box.innerHTML = '<p class="sec-sub">沒有結果。試短一點的關鍵詞，或直接搜粵拼。</p>'; return; }
+
+  var html = '<p class="sec-sub">找到 <b>' + total + '</b> 項</p>';
+  if(r.lesson.length){
+    html += '<h4 class="srch-h">課程（' + r.lesson.length + '）</h4><div class="srchlist">'
+      + r.lesson.map(function(x){
+          return '<button class="sritem" data-act="open-result" data-no="' + x.no + '" data-lid="' + x.lid + '">'
+            + '<span class="srt">第 ' + pad2(x.no) + ' 課</span>'
+            + '<b>' + esc(x.title) + '</b><i>' + esc(x.volume) + '</i></button>';
+        }).join("") + '</div>';
+  }
+  if(r.vocab.length){
+    html += '<h4 class="srch-h">詞彙（' + r.vocab.length + '）</h4><div class="srchlist">'
+      + r.vocab.slice(0, 80).map(function(x){
+          return '<button class="sritem" data-act="open-result" data-no="' + x.no + '" data-lid="' + x.lid
+            + '" data-word="' + esc(x.w) + '">'
+            + '<span class="srt">L' + pad2(x.no) + '</span>'
+            + '<b>' + esc(x.w) + '</b><em>' + esc(x.jp) + '</em>'
+            + '<span class="src">' + esc(x.cmn) + '</span></button>';
+        }).join("")
+      + (r.vocab.length > 80 ? '<p class="sec-sub">只顯示前 80 條，再多給幾個字。</p>' : "")
+      + '</div>';
+  }
+  if(r.sent.length){
+    html += '<h4 class="srch-h">課文句（' + r.sent.length + '）</h4><div class="srchlist">'
+      + r.sent.slice(0, 60).map(function(x){
+          return '<button class="sritem srsent" data-act="open-result" data-no="' + x.no + '" data-lid="' + x.lid
+            + '" data-sid="' + x.sid + '">'
+            + '<span class="srt">L' + pad2(x.no) + '</span>'
+            + '<b>' + esc(x.yue) + '</b><em>' + esc(x.jp) + '</em>'
+            + '<span class="src">' + esc(x.cmn) + '</span></button>';
+        }).join("")
+      + (r.sent.length > 60 ? '<p class="sec-sub">只顯示前 60 句。</p>' : "")
+      + '</div>';
+  }
+  box.innerHTML = html;
+}
+
+function openSearchResult(t){
+  var no = +t.getAttribute("data-no");
+  var sid = t.getAttribute("data-sid") || "";
+  var word = t.getAttribute("data-word") || "";
+  pendingJump = (sid || word) ? {sid: sid, word: word} : null;
+  location.hash = "#/lesson/" + no;
+  renderLesson(no);
+  if(pendingJump) setTimeout(applyPendingJump, 150);
+}
+
+function applyPendingJump(){
+  if(!pendingJump) return;
+  var el = null;
+  if(pendingJump.sid){
+    el = document.querySelector('[data-sid="' + pendingJump.sid + '"]');
+  } else if(pendingJump.word){
+    var cards = $$(".vcard");
+    for(var i = 0; i < cards.length; i++){
+      var w = cards[i].querySelector(".vw");
+      if(w && w.textContent === pendingJump.word){ el = cards[i]; break; }
+    }
+  }
+  if(el){
+    el.scrollIntoView({behavior: "smooth", block: "center"});
+    el.classList.add("flash");
+    setTimeout(function(){ el.classList.remove("flash"); }, 1900);
+  }
+  pendingJump = null;
+}
+
 /* ============ 路由 ============ */
 function parseRoute(){
   var h = (location.hash||"").replace(/^#\/?/,"");
   var m = h.match(/^lesson\/(\d+)/);
   if(m) return {view:"lesson", no:+m[1]};
   if(h==="home") return {view:"home"};
+  if(h==="search") return {view:"search"};
   return null;
 }
 function goLesson(no){
@@ -2101,6 +2276,7 @@ function onRoute(){
   var r = parseRoute();
   if(!r) return;
   if(r.view==="home"){ renderHome(); }
+  else if(r.view==="search"){ renderSearch(); }
   else if(!CUR || CUR.no!==r.no){ renderLesson(r.no); }
   else { window.scrollTo(0,0); }
 }
@@ -2120,6 +2296,12 @@ document.addEventListener("click", function(e){
   var act = t.getAttribute("data-act");
 
   if(act==="home"){ closeDrawer(); location.hash = "#/home"; renderHome(); }
+  else if(act==="search"){ closeDrawer(); location.hash = "#/search"; renderSearch(); }
+  else if(act==="search-clear"){
+    var qi = $("#q");
+    if(qi){ qi.value = ""; paintSearch(""); qi.focus(); }
+  }
+  else if(act==="open-result"){ closeDrawer(); openSearchResult(t); }
   else if(act==="go"){
     var no = +t.getAttribute("data-no");
     var L2 = lessonById(no);
@@ -2387,6 +2569,7 @@ applyPrefs();
 tts.load();
 var r0 = parseRoute();
 if(r0 && r0.view==="home") renderHome();
+else if(r0 && r0.view==="search") renderSearch();
 else renderLesson(r0 && r0.no ? r0.no
                    : (state.last && lessonById(state.last) ? state.last
                      : (DATA.L03 ? 3 : firstReady())));
