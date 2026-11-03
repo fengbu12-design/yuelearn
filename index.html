@@ -694,6 +694,24 @@ html[data-theme="dark"] .reading{background:#33211A;box-shadow:0 0 0 4px #33211A
 .lq-sum-btns{display:flex;gap:10px;margin-top:8px}
 .tool.main{background:var(--accent);border-color:var(--accent);color:#fff}
 
+/* 複習 */
+.rv-card{border:1px solid var(--line);border-radius:16px;padding:26px 20px 22px;background:var(--card);
+  display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+.rv-word{font-size:38px;line-height:1.25;letter-spacing:.02em}
+.rv-play{position:relative;top:-6px}
+.rv-show{margin-top:6px;padding:11px 26px;font-size:14px}
+.rv-ans{display:flex;flex-direction:column;gap:5px}
+.rv-jp{font-family:var(--mono);font-size:15px;color:var(--accent)}
+.rv-cmn{font-size:15px;color:var(--ink)}
+.rv-ex{font-size:12.5px;color:var(--ink3)}
+.rv-grades{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+.rv-g{padding:11px 20px;border-radius:10px;border:1px solid var(--line);background:var(--paper);
+  color:var(--ink);font-size:14px;cursor:pointer}
+.rv-g.bad:hover{border-color:var(--accent);background:var(--accent-soft)}
+.rv-g.mid:hover{border-color:var(--gold);background:#fdf6e8}
+.rv-g.ok:hover{border-color:var(--jade);background:var(--jade-soft)}
+.rv-foot{margin-top:14px;text-align:center}
+
 </style>
 </head>
 <body>
@@ -707,6 +725,7 @@ html[data-theme="dark"] .reading{background:#33211A;box-shadow:0 0 0 4px #33211A
     <div class="side-foot">
       <button data-act="search">全站搜索</button>
       <button data-act="listen">聽力練習</button>
+      <button data-act="review">複習 <b id="rv-count">0</b></button>
       <button data-act="open-vocab">生詞本 <b id="vw-count">0</b></button>
       <button data-act="open-notes">我的筆記</button>
       <button data-act="theme">夜讀模式</button>
@@ -783,8 +802,8 @@ html[data-theme="dark"] .reading{background:#33211A;box-shadow:0 0 0 4px #33211A
 
 <div class="toast" id="toast"></div>
 
-<script src="data/course.js?v=53"></script>
-<script src="data/lessons.js?v=53"></script>
+<script src="data/course.js?v=54"></script>
+<script src="data/lessons.js?v=54"></script>
 <script>
 (function(){
 "use strict";
@@ -826,6 +845,18 @@ var state = {
 };
 if(!state.prefs.mask) state.prefs.mask = "";
 if(state.prefs.explainV !== 2){ state.prefs.explain = "yue"; state.prefs.explainV = 2; DB.set("prefs", state.prefs); }
+
+/* 生詞的間隔重複欄位：老數據只有 {w,jp,cmn,ex,at}，這裡一次性補齊 */
+(function migrateWords(){
+  var t = Date.now(), changed = false;
+  state.words.forEach(function(w){
+    if(typeof w.box !== "number"){ w.box = 1; changed = true; }
+    if(typeof w.due !== "number"){ w.due = t; changed = true; }
+    if(typeof w.ok !== "number"){ w.ok = 0; changed = true; }
+    if(typeof w.bad !== "number"){ w.bad = 0; changed = true; }
+  });
+  if(changed) DB.set("words", state.words);
+})();
 
 /* ============ 小工具 ============ */
 function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];}); }
@@ -1195,6 +1226,8 @@ function renderNav(){
   }).join("");
   $("#nav").innerHTML = html;
   $("#vw-count").textContent = state.words.length;
+  var rvc = $("#rv-count");
+  if(rvc) rvc.textContent = reviewDueCount();
 }
 
 /* ============ 課程總覽 ============ */
@@ -2496,6 +2529,145 @@ function lqPlay(slow){
   tts.start([{audio: audio, text: it.yue}], {name: slow ? "聽力·慢速" : "聽力"});
 }
 
+/* ============ 複習（間隔重複 · Leitner） ============ */
+var RV = null;
+var BOX_DAYS = [null, 1, 2, 4, 8, 16];      /* box 1..5 對應的間隔天數 */
+var AGAIN_MS = 10 * 60 * 1000;              /* 「唔記得」→ 10 分鐘後再來 */
+var WAUDIO = null;
+
+function wordDue(w){ return (w.due || 0) <= Date.now(); }
+function dueWords(){ return state.words.filter(wordDue); }
+function reviewDueCount(){ return dueWords().length; }
+
+function wordAudio(w){
+  if(!WAUDIO){
+    WAUDIO = {};
+    Object.keys(DATA).forEach(function(k){
+      (DATA[k].vocab || []).forEach(function(v){
+        if(v.audio && !WAUDIO[v.w]) WAUDIO[v.w] = v.audio;
+      });
+    });
+  }
+  return WAUDIO[w] || "";
+}
+
+function scheduleWord(w, grade){
+  var now = Date.now();
+  if(grade === 0){
+    w.box = 1;
+    w.bad = (w.bad || 0) + 1;
+    w.due = now + AGAIN_MS;
+  } else if(grade === 1){
+    w.box = Math.max(1, w.box || 1);
+    w.ok = (w.ok || 0) + 1;
+    w.due = now + BOX_DAYS[w.box] * 86400000;
+  } else {
+    w.box = Math.min(5, (w.box || 1) + 1);
+    w.ok = (w.ok || 0) + 1;
+    w.due = now + BOX_DAYS[w.box] * 86400000;
+  }
+  DB.set("words", state.words);
+}
+
+function startReview(){
+  var list = dueWords();
+  RV = {list: shuffle(list), i: 0, ok: 0, bad: 0, revealed: false};
+  renderReview();
+}
+
+function renderReview(){
+  if(!RV){ startReview(); return; }
+  state.view = "review";
+  document.title = "粵語自習室 · 複習";
+  $("#crumb").innerHTML = "<b>複習</b>";
+  $("#view").className = "wrap";
+
+  if(!state.words.length){
+    $("#view").innerHTML = '<section class="hero"><div class="hero-main">'
+      + '<div class="kicker">YUE · REVIEW</div><h1>複習</h1></div></section>'
+      + '<section class="sec"><p class="sec-sub">生詞本還是空的。去課文頁的詞彙卡上按 ☆，'
+      + '加入之後這裡會按記憶曲線安排複習。</p>'
+      + '<div class="lq-sum-btns"><button class="tool" data-act="home">去看課文</button></div></section>';
+    renderNav(); window.scrollTo(0, 0); return;
+  }
+
+  if(RV.i >= RV.list.length){
+    var nxt = state.words.filter(function(w){ return !wordDue(w); })
+      .sort(function(a, b){ return (a.due || 0) - (b.due || 0); })[0];
+    var when = "";
+    if(nxt){
+      var ms = (nxt.due || 0) - Date.now();
+      var d = Math.floor(ms / 86400000), h = Math.floor(ms % 86400000 / 3600000),
+          m = Math.floor(ms % 3600000 / 60000);
+      when = d > 0 ? (d + " 天後") : (h > 0 ? (h + " 小時後") : (m + " 分鐘後"));
+    }
+    $("#view").innerHTML = '<section class="hero"><div class="hero-main">'
+      + '<div class="kicker">YUE · REVIEW</div><h1>本輪完成</h1>'
+      + '<div class="meta"><span>複習 ' + RV.list.length + ' 個</span>'
+      + '<span>記得 ' + RV.ok + '</span><span>唔記得 ' + RV.bad + '</span></div></div></section>'
+      + '<section class="sec rv-sum"><p class="sec-sub">'
+      + (when ? ("下次複習最快在 <b>" + when + "</b>。") : "所有生詞都排好下次複習時間了。")
+      + '</p><div class="lq-sum-btns">'
+      + '<button class="tool main" data-act="rv-again">再檢查一次</button>'
+      + '<button class="tool" data-act="home">回課程</button></div></section>';
+    renderNav(); window.scrollTo(0, 0); return;
+  }
+
+  var w = RV.list[RV.i];
+  var card = '<div class="rv-card">'
+    + '<div class="rv-word">' + esc(w.w) + '</div>'
+    + '<button class="eb rv-play" data-act="rv-play" aria-label="朗讀">▶</button>'
+    + (RV.revealed
+        ? '<div class="rv-ans"><div class="rv-jp">' + esc(w.jp || "（無粵拼）") + '</div>'
+          + '<div class="rv-cmn">' + esc(w.cmn || "") + '</div>'
+          + (w.ex ? '<div class="rv-ex">' + esc(w.ex) + '</div>' : "") + '</div>'
+          + '<div class="rv-grades">'
+          + '<button class="rv-g bad" data-act="rv-grade" data-g="0">唔記得</button>'
+          + '<button class="rv-g mid" data-act="rv-grade" data-g="1">有啲印象</button>'
+          + '<button class="rv-g ok" data-act="rv-grade" data-g="2">記得</button></div>'
+        : '<button class="tool main rv-show" data-act="rv-reveal">顯示答案</button>')
+    + '</div>';
+
+  $("#view").innerHTML = ''
+  + '<section class="hero"><div class="hero-main"><div class="kicker">YUE · REVIEW</div>'
+  + '<h1>複習</h1>'
+  + '<div class="meta"><span>今日待複習 ' + dueWords().length + ' 個</span>'
+  + '<span>生詞本共 ' + state.words.length + ' 個</span>'
+  + '<span>第 ' + (RV.i + 1) + ' / ' + RV.list.length + '</span></div>'
+  + '</div></section>'
+  + '<section class="sec"><div class="sec-h"><span class="sec-num">記</span><h2>先自己想，再對答案</h2></div>'
+  + '<p class="sec-sub">記得就往下一個盒子排更久；唔記得就回到第一個盒子，10 分鐘後再見。</p>'
+  + card
+  + '<p class="sec-sub rv-foot">本輪：記得 <b>' + RV.ok + '</b> · 唔記得 <b>' + RV.bad + '</b></p>'
+  + '</section>';
+
+  renderNav();
+  applyPrefs();
+  window.scrollTo(0, 0);
+}
+
+function rvReveal(){
+  if(!RV || RV.i >= RV.list.length) return;
+  RV.revealed = true;
+  renderReview();
+}
+
+function rvGrade(g){
+  if(!RV || RV.i >= RV.list.length) return;
+  var w = RV.list[RV.i];
+  scheduleWord(w, g);
+  if(g === 0) RV.bad++; else RV.ok++;
+  RV.i++;
+  RV.revealed = false;
+  renderReview();
+}
+
+function rvPlay(){
+  if(!RV || RV.i >= RV.list.length) return;
+  var w = RV.list[RV.i];
+  tts.start([{audio: wordAudio(w.w), text: w.w}], {name: "生詞朗讀"});
+}
+
 /* ============ 路由 ============ */
 function parseRoute(){
   var h = (location.hash||"").replace(/^#\/?/,"");
@@ -2504,6 +2676,7 @@ function parseRoute(){
   if(h==="home") return {view:"home"};
   if(h==="search") return {view:"search"};
   if(h==="listen") return {view:"listen"};
+  if(h==="review") return {view:"review"};
   return null;
 }
 function goLesson(no){
@@ -2516,6 +2689,7 @@ function onRoute(){
   if(r.view==="home"){ renderHome(); }
   else if(r.view==="search"){ renderSearch(); }
   else if(r.view==="listen"){ if(!LQ || !LQ.list.length) newListenSession("meaning"); else renderListen(); }
+  else if(r.view==="review"){ if(!RV) startReview(); else renderReview(); }
   else if(!CUR || CUR.no!==r.no){ renderLesson(r.no); }
   else { window.scrollTo(0,0); }
 }
@@ -2554,6 +2728,15 @@ document.addEventListener("click", function(e){
   else if(act==="lq-slow"){ lqPlay(true); }
   else if(act==="lq-mode"){ newListenSession(t.getAttribute("data-mode")); }
   else if(act==="lq-restart" || act==="lq-again"){ newListenSession(); }
+  else if(act==="review"){
+    closeDrawer();
+    location.hash = "#/review";
+    if(!RV) startReview(); else renderReview();
+  }
+  else if(act==="rv-reveal"){ rvReveal(); }
+  else if(act==="rv-grade"){ rvGrade(+t.getAttribute("data-g")); }
+  else if(act==="rv-again"){ RV = {list: shuffle(RV.list), i: 0, ok: 0, bad: 0, revealed: false}; renderReview(); }
+  else if(act==="rv-play"){ rvPlay(); }
   else if(act==="go"){
     var no = +t.getAttribute("data-no");
     var L2 = lessonById(no);
@@ -2683,7 +2866,8 @@ document.addEventListener("click", function(e){
     var idx = -1;
     state.words.forEach(function(w,k){ if(w.w===v.w) idx=k; });
     if(idx>=0){ state.words.splice(idx,1); t.classList.remove("on"); t.textContent="☆"; toast("已移出生詞本"); }
-    else{ state.words.push({w:v.w, jp:v.jp, cmn:v.cmn, ex:v.ex, at:Date.now()}); t.classList.add("on"); t.textContent="★"; toast("已加入生詞本"); }
+    else{ state.words.push({w:v.w, jp:v.jp, cmn:v.cmn, ex:v.ex, at:Date.now(),
+                            box:1, due:Date.now(), ok:0, bad:0}); t.classList.add("on"); t.textContent="★"; toast("已加入生詞本"); }
     DB.set("words", state.words);
     $("#vw-count").textContent = state.words.length;
   }
@@ -2823,6 +3007,7 @@ var r0 = parseRoute();
 if(r0 && r0.view==="home") renderHome();
 else if(r0 && r0.view==="search") renderSearch();
 else if(r0 && r0.view==="listen"){ newListenSession("meaning"); }
+else if(r0 && r0.view==="review"){ startReview(); }
 else renderLesson(r0 && r0.no ? r0.no
                    : (state.last && lessonById(state.last) ? state.last
                      : (DATA.L03 ? 3 : firstReady())));
