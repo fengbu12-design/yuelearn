@@ -752,6 +752,31 @@ html[data-theme="dark"] .reading{background:#33211A;box-shadow:0 0 0 4px #33211A
   border-radius:6px;padding:2px 6px}
 .rel-card em{font-style:normal;font-size:11px;color:var(--ink3);margin-left:auto}
 
+/* 循環洗腦 */
+.lp-pick{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+.lp-lab{font-size:11.5px;color:var(--ink3);margin-right:2px}
+.lp-chip{border:1px solid var(--line);border-radius:9px;padding:8px 12px;background:var(--card);
+  color:var(--ink2);font-size:13px;cursor:pointer}
+.lp-chip b{font-family:var(--mono);font-size:10.5px;color:var(--ink3);margin-left:6px}
+.lp-chip:hover:not(:disabled){border-color:var(--line2)}
+.lp-chip.on{border-color:var(--accent);background:var(--accent-soft);color:var(--ink)}
+.lp-chip:disabled{opacity:.45;cursor:not-allowed}
+.lp-hint{font-size:11.5px;color:var(--ink3)}
+.lp-card{border:1px solid var(--line);border-radius:16px;background:var(--card);
+  padding:32px 24px 24px;text-align:center;margin-top:16px}
+.lp-now{font-family:var(--serif);font-size:44px;line-height:1.35;letter-spacing:.02em;min-height:60px}
+.lp-sub{font-size:14px;color:var(--ink2);margin-top:8px;min-height:20px}
+.lp-prog{font-family:var(--mono);font-size:12px;color:var(--ink3);margin-top:12px}
+.lp-ctrl{display:flex;gap:12px;justify-content:center;margin-top:22px;flex-wrap:wrap}
+.lp-btn{padding:13px 24px;border-radius:11px;border:1px solid var(--line);background:var(--paper);
+  color:var(--ink);font-size:15px;cursor:pointer}
+.lp-btn:hover{border-color:var(--line2)}
+.lp-btn.main{background:var(--accent);border-color:var(--accent);color:#fff;min-width:150px}
+@media (max-width:560px){
+  .lp-now{font-size:34px}
+  .lp-btn{padding:14px 18px}
+}
+
 </style>
 </head>
 <body>
@@ -766,6 +791,7 @@ html[data-theme="dark"] .reading{background:#33211A;box-shadow:0 0 0 4px #33211A
       <button data-act="search">全站搜索</button>
       <button data-act="listen">聽力練習</button>
       <button data-act="review">複習 <b id="rv-count">0</b></button>
+      <button data-act="loop">循環洗腦</button>
       <button data-act="phonics">語音總覽</button>
       <button data-act="open-vocab">生詞本 <b id="vw-count">0</b></button>
       <button data-act="open-notes">我的筆記</button>
@@ -843,8 +869,8 @@ html[data-theme="dark"] .reading{background:#33211A;box-shadow:0 0 0 4px #33211A
 
 <div class="toast" id="toast"></div>
 
-<script src="data/course.js?v=57"></script>
-<script src="data/lessons.js?v=57"></script>
+<script src="data/course.js?v=61"></script>
+<script src="data/lessons.js?v=61"></script>
 <script>
 (function(){
 "use strict";
@@ -1364,6 +1390,7 @@ var SEC = {
         + '<button class="pb-btn'+(state.prefs.shadow?" on":"")+'" data-act="shadow">跟讀</button>'
         + '<button class="pb-btn" data-act="mask">'+(state.prefs.mask===""?"遮字：無":state.prefs.mask==="hanzi"?"遮字：藏漢字":"遮字：藏粵拼")+'</button>'
         + '<span class="pb-sep"></span>'
+        + '<button class="pb-btn" data-act="loop-here" title="把本課詞彙循環播放">循環</button>'
         + '<button class="pb-btn" data-act="stop">停止</button>'
         + '</div>';
 
@@ -2858,6 +2885,180 @@ function relatedSection(L){
       }).join("") + '</div></section>';
 }
 
+/* ============ 循環洗腦（Loop） ============ */
+var LP = {
+  on: false, paused: false, list: [], i: 0, rounds: 0,
+  gap: 1200, shuffle: false, src: "lessonVocab", timer: null
+};
+
+function lpSourceLabel(src){
+  return ({
+    lessonVocab: "本課詞彙",
+    lessonSent: "本課課文",
+    words: "生詞本",
+    due: "今日複習",
+    allVocab: "全書詞彙"
+  })[src] || src;
+}
+
+function lpBuild(src){
+  var items = [];
+  if(src === "lessonVocab" && CUR){
+    (CUR.vocab || []).forEach(function(v){ items.push({text: v.w, audio: v.audio, sub: v.cmn}); });
+  } else if(src === "lessonSent" && CUR){
+    (CUR.sentences || []).forEach(function(s){ items.push({text: s.yue, audio: s.audio, sub: s.cmn}); });
+  } else if(src === "words"){
+    state.words.forEach(function(w){ items.push({text: w.w, audio: wordAudio(w.w), sub: w.cmn}); });
+  } else if(src === "due"){
+    dueWords().forEach(function(w){ items.push({text: w.w, audio: wordAudio(w.w), sub: w.cmn}); });
+  } else if(src === "allVocab"){
+    Object.keys(DATA).sort().forEach(function(k){
+      (DATA[k].vocab || []).forEach(function(v){ items.push({text: v.w, audio: v.audio, sub: v.cmn}); });
+    });
+  }
+  return items.filter(function(x){ return x.text; });
+}
+
+function renderLoop(){
+  state.view = "loop";
+  document.title = "粵語自習室 · 循環洗腦";
+  $("#crumb").innerHTML = "<b>循環洗腦</b>";
+  $("#view").className = "wrap";
+
+  var srcs = ["lessonVocab", "lessonSent", "words", "due", "allVocab"];
+  var cnt = {};
+  srcs.forEach(function(s){ cnt[s] = lpBuild(s).length; });
+  var pickable = function(s){ return cnt[s] > 0; };
+
+  $("#view").innerHTML = ''
+  + '<section class="hero"><div class="hero-main"><div class="kicker">YUE · LOOP</div>'
+  + '<h1>循環洗腦</h1>'
+  + '<div class="meta"><span>連續播放</span><span>跑步可用</span><span>可暫停／跳過</span></div>'
+  + '</div></section>'
+  + '<section class="sec"><div class="sec-h"><span class="sec-num">聽</span><h2>一直播，直到你按停</h2></div>'
+  + '<p class="sec-sub">選一組內容，它會一首接一首循環；中間留一點空檔讓你在心裡跟讀。'
+  + '跑步、走路、做家務時用，不用一直點。</p>'
+
+  + '<div class="lp-pick"><span class="lp-lab">內容</span>'
+  + srcs.map(function(s){
+      var dis = pickable(s) ? "" : " disabled";
+      var on = LP.src === s ? " on" : "";
+      return '<button class="lp-chip' + on + '" data-act="lp-src" data-src="' + s + '"' + dis + '>'
+        + lpSourceLabel(s) + '<b>' + cnt[s] + '</b></button>';
+    }).join("")
+  + (CUR ? "" : '<span class="lp-hint">「本課」相關要從課文頁進來才有內容</span>')
+  + '</div>'
+
+  + '<div class="lp-pick"><span class="lp-lab">空檔</span>'
+  + [500, 1200, 2000, 3000].map(function(g){
+      return '<button class="lp-chip' + (LP.gap === g ? " on" : "") + '" data-act="lp-gap" data-gap="' + g + '">'
+        + (g / 1000) + ' 秒</button>';
+    }).join("")
+  + '<span class="lp-lab" style="margin-left:14px">順序</span>'
+  + '<button class="lp-chip' + (LP.shuffle ? "" : " on") + '" data-act="lp-order" data-shuffle="0">順序</button>'
+  + '<button class="lp-chip' + (LP.shuffle ? " on" : "") + '" data-act="lp-order" data-shuffle="1">隨機</button>'
+  + '</div>'
+
+  + '<div class="lp-card">'
+  +   '<div class="lp-now" id="lp-now">' + (LP.on ? esc((LP.list[LP.i] || {}).text || "") : "準備好就按開始") + '</div>'
+  +   '<div class="lp-sub" id="lp-sub">' + (LP.on ? esc((LP.list[LP.i] || {}).sub || "") : "") + '</div>'
+  +   '<div class="lp-prog" id="lp-prog">' + (LP.on ? lpProgText() : "—") + '</div>'
+  +   '<div class="lp-ctrl">'
+  +     (LP.on
+          ? '<button class="lp-btn main" data-act="lp-toggle">' + (LP.paused ? "繼續" : "暫停") + '</button>'
+            + '<button class="lp-btn" data-act="lp-next">下一個</button>'
+            + '<button class="lp-btn" data-act="lp-stop">停止</button>'
+          : '<button class="lp-btn main" data-act="lp-start">▶ 開始循環</button>')
+  +   '</div>'
+  + '</div>'
+  + '<p class="sec-sub">提示：手機鎖屏後瀏覽器可能會暫停播放，這是系統限制；螢幕亮著時可連續播放。</p>'
+  + '</section>';
+
+  renderNav();
+  applyPrefs();
+  if(!LP.on) window.scrollTo(0, 0);
+}
+
+function lpProgText(){
+  var n = LP.list.length || 1;
+  return "第 " + (LP.i + 1) + " / " + n + " 個　·　第 " + (LP.rounds + 1) + " 輪";
+}
+
+function lpPaint(){
+  var now = $("#lp-now"), sub = $("#lp-sub"), prog = $("#lp-prog");
+  var it = LP.list[LP.i] || {text: "", sub: ""};
+  if(now) now.textContent = it.text || "";
+  if(sub) sub.textContent = it.sub || "";
+  if(prog) prog.textContent = lpProgText();
+}
+
+function lpStart(src){
+  if(src) LP.src = src;
+  var list = lpBuild(LP.src);
+  if(!list.length){ toast("這組沒有內容"); return; }
+  LP.list = LP.shuffle ? shuffle(list) : list;
+  LP.i = 0; LP.rounds = 0; LP.on = true; LP.paused = false;
+  if(state.view !== "loop") location.hash = "#/loop";
+  renderLoop();          // 必須重繪：控制列要從「開始」換成「暫停／下一個／停止」
+  lpPlayCurrent();
+}
+
+function lpPlayCurrent(){
+  if(!LP.on) return;
+  var it = LP.list[LP.i];
+  if(!it){ LP.on = false; return; }
+  lpPaint();
+  tts.start([{audio: it.audio, text: it.text}], {
+    name: "循環洗腦",
+    onEnd: function(){
+      if(!LP.on) return;
+      var nxt = LP.i + 1;
+      if(nxt >= LP.list.length){
+        nxt = 0; LP.rounds++;
+        if(LP.shuffle) LP.list = shuffle(LP.list);
+      }
+      LP.i = nxt;
+      clearTimeout(LP.timer);
+      LP.timer = setTimeout(lpPlayCurrent, LP.gap);
+    }
+  });
+}
+
+function lpToggle(){
+  if(!LP.on) return;
+  LP.paused = !LP.paused;
+  if(LP.paused){
+    clearTimeout(LP.timer);
+    tts.pause();
+  } else {
+    if(tts.paused) tts.resume();
+    else lpPlayCurrent();
+  }
+  renderLoop();
+}
+
+function lpNext(){
+  if(!LP.on) return;
+  clearTimeout(LP.timer);
+  // 手動下一句：先把當前播放停掉，索引推進後立刻播
+  tts.stop();
+  var nxt = LP.i + 1;
+  if(nxt >= LP.list.length){
+    nxt = 0; LP.rounds++;
+    if(LP.shuffle) LP.list = shuffle(LP.list);
+  }
+  LP.i = nxt;
+  LP.paused = false;
+  lpPlayCurrent();
+}
+
+function lpStop(){
+  LP.on = false; LP.paused = false;
+  clearTimeout(LP.timer);
+  tts.stop();
+  renderLoop();
+}
+
 /* ============ 路由 ============ */
 function parseRoute(){
   var h = (location.hash||"").replace(/^#\/?/,"");
@@ -2868,6 +3069,7 @@ function parseRoute(){
   if(h==="listen") return {view:"listen"};
   if(h==="review") return {view:"review"};
   if(h==="phonics") return {view:"phonics"};
+  if(h==="loop") return {view:"loop"};
   return null;
 }
 function goLesson(no){
@@ -2882,6 +3084,7 @@ function onRoute(){
   else if(r.view==="listen"){ if(!LQ || !LQ.list.length) newListenSession("meaning"); else renderListen(); }
   else if(r.view==="review"){ if(!RV) startReview(); else renderReview(); }
   else if(r.view==="phonics"){ renderPhonics(); }
+  else if(r.view==="loop"){ renderLoop(); }
   else if(!CUR || CUR.no!==r.no){ renderLesson(r.no); }
   else { window.scrollTo(0,0); }
 }
@@ -2930,6 +3133,19 @@ document.addEventListener("click", function(e){
   else if(act==="rv-again"){ RV = {list: shuffle(RV.list), i: 0, ok: 0, bad: 0, revealed: false}; renderReview(); }
   else if(act==="rv-play"){ rvPlay(); }
   else if(act==="phonics"){ closeDrawer(); location.hash = "#/phonics"; renderPhonics(); }
+  else if(act==="loop"){ closeDrawer(); location.hash = "#/loop"; renderLoop(); }
+  else if(act==="lp-src"){ LP.src = t.getAttribute("data-src"); if(LP.on) lpStop(); renderLoop(); }
+  else if(act==="lp-gap"){ LP.gap = +t.getAttribute("data-gap"); renderLoop(); }
+  else if(act==="lp-order"){
+    LP.shuffle = t.getAttribute("data-shuffle") === "1";
+    if(LP.on){ LP.list = LP.shuffle ? shuffle(LP.list) : LP.list; }
+    renderLoop();
+  }
+  else if(act==="loop-here"){ lpStart("lessonVocab"); }
+  else if(act==="lp-start"){ lpStart(); }
+  else if(act==="lp-toggle"){ lpToggle(); }
+  else if(act==="lp-next"){ lpNext(); }
+  else if(act==="lp-stop"){ lpStop(); }
   else if(act==="go"){
     var no = +t.getAttribute("data-no");
     var L2 = lessonById(no);
@@ -3202,6 +3418,7 @@ else if(r0 && r0.view==="search") renderSearch();
 else if(r0 && r0.view==="listen"){ newListenSession("meaning"); }
 else if(r0 && r0.view==="review"){ startReview(); }
 else if(r0 && r0.view==="phonics"){ renderPhonics(); }
+else if(r0 && r0.view==="loop"){ renderLoop(); }
 else renderLesson(r0 && r0.no ? r0.no
                    : (state.last && lessonById(state.last) ? state.last
                      : (DATA.L03 ? 3 : firstReady())));
